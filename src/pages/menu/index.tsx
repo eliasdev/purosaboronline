@@ -20,12 +20,16 @@ import Header from '../../modules/sections/header';
 import CartModal from '../../modules/components/cartModal';
 import { CartItem } from '../../types/index'; // Import the CartItem type
 
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-
+const burgerData: CartItem[] = [
+  { name: 'Classic Burger', price: 10 },
+  { name: 'Cheeseburger Deluxe', price: 12 },
+  { name: 'Bacon BBQ Burger', price: 14 },
+  // Add more burgers...
+];
 
 export default function Menu() {
 
@@ -38,8 +42,12 @@ export default function Menu() {
 
     const addToCart = (item: CartItem) => {
         setCartItems(prevCartItems => [...prevCartItems, item]);
+        handleCartToggle();
     };
     
+    const handleEmptyCart = () => {
+      setCartItems([]); // Clear the cart items
+    };
 
   return (
 
@@ -47,19 +55,18 @@ export default function Menu() {
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <Header/>
-      <CartModal isOpen={isCartOpen} onClose={handleCartToggle} cartItems={cartItems} />
+      <CartModal isOpen={isCartOpen} onEmptyCart={handleEmptyCart} onClose={handleCartToggle} cartItems={cartItems} />
 
       <main>
         {/* Hero unit */}
-        <Box
+        <Container
           sx={{
             bgcolor: 'background.paper',
             pt: 8,
             pb: 6,
           }}
         >
-          <Container maxWidth="sm">
-            <Typography
+          <Typography
               component="h1"
               variant="h2"
               align="center"
@@ -82,36 +89,33 @@ export default function Menu() {
               <Button onClick={handleCartToggle} variant="contained">Main call to action</Button>
               <Button variant="outlined">Secondary action</Button>
             </Stack>
-          </Container>
-        </Box>
+        </Container>
+
         <Container sx={{ py: 8 }} maxWidth="md">
-          {/* End hero unit */}
+          {/* Cards */}
           <Grid container spacing={4}>
-            {cards.map((card) => (
-              <Grid item key={card} xs={12} sm={6} md={4}>
+            {burgerData.map((burger, index) => (
+              <Grid item key={index} xs={12} sm={6} md={4}>
                 <Card
                   sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                 >
                   <CardMedia
                     component="div"
                     sx={{
-                      // 16:9
                       pt: '56.25%',
                     }}
                     image="https://source.unsplash.com/random?wallpapers"
                   />
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography gutterBottom variant="h5" component="h2">
-                      Heading
+                      {burger.name}
                     </Typography>
                     <Typography>
-                      This is a media card. You can use this section to describe the
-                      content.
+                      Price: ${burger.price}
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small">View</Button>
-                    <Button size="small">Edit</Button>
+                    <Button size="small" onClick={() => addToCart(burger)}>Add to Cart</Button>
                   </CardActions>
                 </Card>
               </Grid>
