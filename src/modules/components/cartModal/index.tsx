@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, List, ListItem, ListItemText, Typography, TextField } from '@mui/material';
+import { Modal, Button, List, ListItem, ListItemText, Typography, TextField, Paper } from '@mui/material';
 import './index.css';
 
 interface CartItem {
   name: string;
   price: number;
+  quantity: number; // Add the quantity attribute
 }
 
 interface CartModalProps {
@@ -18,15 +19,15 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
   const [cartTotal, setCartTotal] = useState(0);
   const [customerName, setCustomerName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [email, setEmail] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     let total = 0;
     cartItems.forEach(item => {
-      total += item.price;
+      total += item.price * item.quantity; // Calculate total price with quantity
     });
     setCartTotal(total);
+    setShowConfirmation(false);
   }, [cartItems]);
 
   const handleConfirmCheckout = () => {
@@ -34,26 +35,15 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
   };
 
   const sendMessage = () => {
-    const formattedOrderText = `
-      Customer Name: ${customerName}
-      Phone Number: ${phoneNumber}
-      Email: ${email}
-      
-      Items in Cart:
-      ${cartItems.map(item => `${item.name} - $${item.price}`).join('\n')}
-      
-      Total: $${cartTotal.toFixed(2)}
-    `;
-    alert(formattedOrderText); // Display the order details as an alert
+    const formattedOrderText = `Cliente: ${customerName} %0aNumero de telefono: ${phoneNumber}%0a
+    %0aConfirmación de la orden:%0a%0a${cartItems.map(item => `${item.name} - $${item.price}`).join('%0a')}%0a%0aTotal: ₡${cartTotal.toFixed(0)} colones`;
+    window.open(( 'https://wa.me/50685194028?text=' + formattedOrderText ),'_blank'); // Display the order details as an alert
   };
-  
 
   return (
     <Modal open={isOpen} onClose={onClose}>
       <div className="modal-overlay">
         <div className="modal-content">
-          
-          
 
           {showConfirmation ? (
             <div>
@@ -63,13 +53,18 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
               <Typography variant="body1" gutterBottom>
                 Items in Cart:
               </Typography>
-              <List>
-                {cartItems.map((item, index) => (
-                  <ListItem key={index}>
-                    <ListItemText primary={item.name} secondary={`$${item.price}`} />
-                  </ListItem>
-                ))}
-              </List>
+              <Paper style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                <List>
+                  {cartItems.map((item, index) => (
+                    <ListItem style={{ height: '50px' }} key={index}>
+                      <ListItemText
+                        primary={`${item.name} x${item.quantity}`} // Display the quantity
+                        secondary={`$${item.price}`}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </Paper>
               <Typography variant="body1" gutterBottom>
                 Total: ${cartTotal.toFixed(2)}
               </Typography>
@@ -87,13 +82,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                 fullWidth
                 margin="normal"
               />
-              <TextField
-                label="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                fullWidth
-                margin="normal"
-              />
+              
               <Button
                 variant="contained"
                 color="primary"
@@ -106,7 +95,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                 color="primary"
                 onClick={sendMessage}
               >
-                Confirm Now
+                Ordenar ahora! 🍔
               </Button>
             </div>
           ) : (
@@ -114,13 +103,18 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
               <Typography variant="h5" gutterBottom>
                 Shopping Cart
               </Typography>
-              <List>
-                {cartItems.map((item, index) => (
-                  <ListItem key={index}>
-                    <ListItemText primary={item.name} secondary={`$${item.price}`} />
-                  </ListItem>
-                ))}
-              </List>
+              <Paper style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                <List>
+                  {cartItems.map((item, index) => (
+                    <ListItem key={index}>
+                      <ListItemText
+                        primary={`${item.name} x${item.quantity}`} // Display the quantity
+                        secondary={`$${item.price}`}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </Paper>
               <Typography variant="subtitle1" gutterBottom>
                 Total: ${cartTotal.toFixed(2)}
               </Typography>
