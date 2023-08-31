@@ -19,15 +19,16 @@ import Footer from '../../modules/sections/footer'
 import Header from '../../modules/sections/header';
 import CartModal from '../../modules/components/cartModal';
 import { CartItem } from '../../types/index'; // Import the CartItem type
+import TextField from '@mui/material/TextField';
 
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 const burgerData: CartItem[] = [
-  { name: 'Classic Burger', price: 10 },
-  { name: 'Cheeseburger Deluxe', price: 12 },
-  { name: 'Bacon BBQ Burger', price: 14 },
+  { name: 'Classic Burger', price: 10, quantity:0 },
+  { name: 'Cheeseburger Deluxe', price: 12, quantity:0 },
+  { name: 'Bacon BBQ Burger', price: 14, quantity:0 },
   // Add more burgers...
 ];
 
@@ -35,14 +36,16 @@ export default function Menu() {
 
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
-
+    const [quantity, setQuantity] = useState(1); // Initialize with quantity 1
+  
     const handleCartToggle = () => {
         setIsCartOpen(!isCartOpen);
     };
 
-    const addToCart = (item: CartItem) => {
-        setCartItems(prevCartItems => [...prevCartItems, item]);
-        handleCartToggle();
+    const addToCart = (item: CartItem, quantity: number) => {
+      const newItem = { ...item, quantity }; // Include the quantity in the item
+      setCartItems(prevCartItems => [...prevCartItems, newItem]);
+      handleCartToggle();
     };
     
     const handleEmptyCart = () => {
@@ -80,15 +83,6 @@ export default function Menu() {
               the creator, etc. Make it short and sweet, but not too short so folks
               don&apos;t simply skip over it entirely.
             </Typography>
-            {/*<Stack
-              sx={{ pt: 4 }}
-              direction="row"
-              spacing={2}
-              justifyContent="center"
-            >
-              <Button onClick={handleCartToggle} variant="contained">Main call to action</Button>
-              <Button variant="outlined">Secondary action</Button>
-            </Stack>*/}
         </Container>
 
         <Container sx={{ py: 8 }} maxWidth="md">
@@ -113,15 +107,26 @@ export default function Menu() {
                     <Typography>
                       Price: ${burger.price}
                     </Typography>
+                    <TextField
+                      label="Quantity"
+                      type="number"
+                      inputProps={{ min: 1 }} // Ensure minimum quantity is 1
+                      value={quantity}
+                      onChange={(e) => setQuantity(parseInt(e.target.value))}
+                      fullWidth
+                      margin="normal"
+                    />
                   </CardContent>
                   <CardActions>
-                    <Button size="small" onClick={() => addToCart(burger)}>Add to Cart</Button>
+                    <Button size="small" onClick={() => addToCart(burger, quantity)}>Add to Cart</Button>
                   </CardActions>
                 </Card>
               </Grid>
             ))}
           </Grid>
         </Container>
+
+
       </main>
       {/* Footer */}
       <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">

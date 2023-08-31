@@ -5,6 +5,7 @@ import './index.css';
 interface CartItem {
   name: string;
   price: number;
+  quantity: number; // Add the quantity attribute
 }
 
 interface CartModalProps {
@@ -23,7 +24,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
   useEffect(() => {
     let total = 0;
     cartItems.forEach(item => {
-      total += item.price;
+      total += item.price * item.quantity; // Calculate total price with quantity
     });
     setCartTotal(total);
     setShowConfirmation(false);
@@ -38,14 +39,11 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
     %0aConfirmación de la orden:%0a%0a${cartItems.map(item => `${item.name} - $${item.price}`).join('%0a')}%0a%0aTotal: ₡${cartTotal.toFixed(0)} colones`;
     window.open(( 'https://wa.me/50685194028?text=' + formattedOrderText ),'_blank'); // Display the order details as an alert
   };
-  
 
   return (
     <Modal open={isOpen} onClose={onClose}>
       <div className="modal-overlay">
         <div className="modal-content">
-          
-          
 
           {showConfirmation ? (
             <div>
@@ -59,7 +57,10 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                 <List>
                   {cartItems.map((item, index) => (
                     <ListItem style={{ height: '50px' }} key={index}>
-                      <ListItemText primary={item.name} secondary={`$${item.price}`} />
+                      <ListItemText
+                        primary={`${item.name} x${item.quantity}`} // Display the quantity
+                        secondary={`$${item.price}`}
+                      />
                     </ListItem>
                   ))}
                 </List>
@@ -106,7 +107,10 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                 <List>
                   {cartItems.map((item, index) => (
                     <ListItem key={index}>
-                      <ListItemText primary={item.name} secondary={`$${item.price}`} />
+                      <ListItemText
+                        primary={`${item.name} x${item.quantity}`} // Display the quantity
+                        secondary={`$${item.price}`}
+                      />
                     </ListItem>
                   ))}
                 </List>
