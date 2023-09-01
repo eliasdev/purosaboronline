@@ -3,6 +3,7 @@ import './App.css';
 import Menu from './pages/menu'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import { ToastContainer } from 'react-toastify';
 
 const About = () => <div>About Page</div>;
 const Contact = () => <div>Contact Page</div>;
@@ -15,8 +16,9 @@ function App() {
           <title>Puro Sabor | Ordená en Línea 🛍️📲</title>
       </Helmet>
       <div className="App">
+        <ToastContainer />  
         <div className='mosaicBackground'></div>
-        <Router basename="/index.html">
+        <Router basename="/">
           <Routes>
             <Route path="/" element={<Menu />} />
             <Route path="/about" element={<About />} />
