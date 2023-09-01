@@ -17,10 +17,10 @@ function Header() {
     return (
       <AppBar position="static" sx={{ backgroundColor: '#FF0000' }}>
         <Toolbar>
-          <Typography align='left' variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography align='center' variant="h6" component="div" sx={{ flexGrow: 1 }}>
           🍔 Puro Sabor | Comida Artesanal
           </Typography>
-          {isMobile ? (
+          { /*isMobile ? (
             <>
               <IconButton
                 size="large"
@@ -38,16 +38,14 @@ function Header() {
               >
                 <MenuItem onClick={closeMenu}>Menu</MenuItem>
                 <MenuItem onClick={closeMenu}>Contacto</MenuItem>
-                {/* Add more menu items */}
               </Menu>
             </>
           ) : (
             <>
               <MenuItem>Menú</MenuItem>
               <MenuItem>Contacto</MenuItem>
-              {/* Add more menu items */}
             </>
-          )}
+          )*/}
         </Toolbar>
       </AppBar>
     );
