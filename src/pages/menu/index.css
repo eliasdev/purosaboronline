@@ -1,0 +1,11 @@
+
+.mosaicBackground {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('../../assets/1.png');
+    background-repeat: repeat;
+    z-index: -1; /* Place the background behind other content */
+}

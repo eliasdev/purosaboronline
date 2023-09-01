@@ -6,22 +6,19 @@ import MenuIcon from '@mui/icons-material/Menu';
 function Header() {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null); // Define the type for anchorEl
-  
     const openMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
       setAnchorEl(event.currentTarget);
     };
-  
     const closeMenu = () => {
       setAnchorEl(null);
     };
   
     return (
-      <AppBar position="static">
+      <AppBar position="static" sx={{ backgroundColor: '#FF0000' }}>
         <Toolbar>
           <Typography align='left' variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Your App Name
+          🍔 Puro Sabor | Comida Artesanal
           </Typography>
           {isMobile ? (
             <>
@@ -39,15 +36,15 @@ function Header() {
                 open={Boolean(anchorEl)}
                 onClose={closeMenu}
               >
-                <MenuItem onClick={closeMenu}>Menu Item 1</MenuItem>
-                <MenuItem onClick={closeMenu}>Menu Item 2</MenuItem>
+                <MenuItem onClick={closeMenu}>Menu</MenuItem>
+                <MenuItem onClick={closeMenu}>Contacto</MenuItem>
                 {/* Add more menu items */}
               </Menu>
             </>
           ) : (
             <>
-              <MenuItem>Menu Item 1</MenuItem>
-              <MenuItem>Menu Item 2</MenuItem>
+              <MenuItem>Menú</MenuItem>
+              <MenuItem>Contacto</MenuItem>
               {/* Add more menu items */}
             </>
           )}
