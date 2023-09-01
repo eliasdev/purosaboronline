@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, List, ListItem, ListItemText, Typography, TextField, Paper } from '@mui/material';
+import { Modal, Button, List, ListItem, ListItemText, Typography, TextField, Paper, Backdrop } from '@mui/material';
 import './index.css';
 
 interface CartItem {
@@ -16,6 +16,8 @@ interface CartModalProps {
 }
 
 const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, cartItems }) => {
+
+  const [backdropClicked, setBackdropClicked] = useState(false);
   const [cartTotal, setCartTotal] = useState(0);
   const [customerName, setCustomerName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -42,8 +44,10 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
 
   return (
     <Modal open={isOpen} onClose={onClose}>
-      <div className="modal-overlay">
-        <div className="modal-content">
+  <div>
+    <Backdrop open={isOpen} onClick={onClose} style={{ zIndex: 9999 }} />
+    <div className="modal-overlay">
+      <div className="modal-content">
 
           {showConfirmation ? (
             <div>
@@ -145,6 +149,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
             </div>
           )}
         </div>
+      </div>
       </div>
     </Modal>
   );
