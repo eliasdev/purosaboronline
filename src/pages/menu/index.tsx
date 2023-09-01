@@ -64,9 +64,21 @@ export default function Menu() {
   };
 
   const addToCart = (item: CartItem) => {
-    setCartItems(prevCartItems => [...prevCartItems, item]);
+    const existingItemIndex = cartItems.findIndex((cartItem) => cartItem.name === item.name);
+  
+    if (existingItemIndex !== -1) {
+      // Item already exists, increase its quantity
+      const updatedCartItems = [...cartItems];
+      updatedCartItems[existingItemIndex].quantity += 1;
+      setCartItems(updatedCartItems);
+    } else {
+      // Item doesn't exist, add it to the cart
+      setCartItems((prevCartItems) => [...prevCartItems, item]);
+    }
+  
     handleCartToggle();
   };
+  
 
   const handleEmptyCart = () => {
     setCartItems([]);
@@ -84,7 +96,7 @@ export default function Menu() {
         sx={{
           bgcolor: 'background.paper',
           pt: 3,
-          pb: 6,
+          pb: {lg:5,sm:3},
         }}
         disableGutters
         >
@@ -100,7 +112,7 @@ export default function Menu() {
           </Typography>
           <Divider/>
           <Typography variant="h5" align="center" color="text.secondary" paragraph
-            sx={{ fontSize: { lg: '1.3em', xs: '0.8em' }, paddingLeft: 6, paddingRight: 6, pt: 2 }}>
+            sx={{ fontSize: { lg: '1.3em', xs: '0.8em' }, paddingLeft: 6, paddingRight: 6, pt: {lg:4, xs:2}, pb: {lg:0, xs:3} }}>
             Elige tus hamburguesas favoritas, selecciona la cantidad y haz clic en el botón 'Agregar al carrito' para realizar tu pedido en línea.
           </Typography>
         </Container>
