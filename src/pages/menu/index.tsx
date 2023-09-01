@@ -1,34 +1,42 @@
 import React, { useState } from 'react';
-import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
-import CameraIcon from '@mui/icons-material/PhotoCamera';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Footer from '../../modules/sections/footer'
 import Header from '../../modules/sections/header';
 import CartModal from '../../modules/components/cartModal';
 import { CartItem } from '../../types/index'; // Import the CartItem type
 import TextField from '@mui/material/TextField';
-
+import "./index.css";
+import ImgBigOne from "../../assets/menu/bigone.png";
+import ImgChicago from "../../assets/menu/chicago.png";
+import ImgPulledPork from "../../assets/menu/pulled.png";
+import ImgMexicana from "../../assets/menu/mexicana.png";
+import ImgItaliana from "../../assets/menu/italiana.png";
+import ImgSpecial from "../../assets/menu/special.png";
+import ImgSweet from "../../assets/menu/sweet.png";
+import ImgNewYork from "../../assets/menu/newyork.png";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 const burgerData: CartItem[] = [
-  { name: 'Classic Burger', price: 10, quantity:0 },
-  { name: 'Cheeseburger Deluxe', price: 12, quantity:0 },
-  { name: 'Bacon BBQ Burger', price: 14, quantity:0 },
+  { name: 'Special Taste', price: 5500, quantity:1, img: ImgSpecial },
+  { name: 'Chicago', price: 5000, quantity:1, img: ImgChicago },
+  { name: 'Pulled Pork', price: 5500, quantity:1, img: ImgPulledPork },
+  { name: 'Big One', price: 5500, quantity:1, img: ImgBigOne },
+  { name: 'New York', price: 5500, quantity:1, img: ImgNewYork },
+  { name: 'Italiana', price: 5500, quantity:1, img: ImgItaliana },
+  { name: 'Mexicana', price: 5500, quantity:1, img: ImgMexicana },
+  { name: 'Sweet Explosion', price: 5500, quantity:1, img: ImgSweet }
   // Add more burgers...
 ];
 
@@ -38,6 +46,14 @@ export default function Menu() {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [quantity, setQuantity] = useState(1); // Initialize with quantity 1
   
+    const shuffleArray = (array: any[]) => {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    };
+    const randomBurgerData = shuffleArray([...burgerData]);
     const handleCartToggle = () => {
         setIsCartOpen(!isCartOpen);
     };
@@ -56,6 +72,7 @@ export default function Menu() {
 
     
     <ThemeProvider theme={defaultTheme}>
+    
       <CssBaseline />
       <Header/>
       <CartModal isOpen={isCartOpen} onEmptyCart={handleEmptyCart} onClose={handleCartToggle} cartItems={cartItems} />
@@ -63,6 +80,7 @@ export default function Menu() {
       <main>
         {/* Hero unit */}
         <Container
+          maxWidth="xl"
           sx={{
             bgcolor: 'background.paper',
             pt: 8,
@@ -75,20 +93,19 @@ export default function Menu() {
               align="center"
               color="text.primary"
               gutterBottom
+              sx={{fontSize:{lg: '2.5em', xs: '0.8em'}}}
             >
-              Album layout
+              Ordena en Línea 📲 Puro Sabor 🍔 Grecia, CR 📍
             </Typography>
             <Typography variant="h5" align="center" color="text.secondary" paragraph>
-              Something short and leading about the collection below—its contents,
-              the creator, etc. Make it short and sweet, but not too short so folks
-              don&apos;t simply skip over it entirely.
+            Elige tus hamburguesas favoritas, selecciona la cantidad y haz clic en el botón 'Agregar al carrito' para realizar tu pedido en línea.
             </Typography>
         </Container>
 
         <Container sx={{ py: 8 }} maxWidth="md">
           {/* Cards */}
           <Grid container spacing={4}>
-            {burgerData.map((burger, index) => (
+            {randomBurgerData.map((burger, index) => (
               <Grid item key={index} xs={12} sm={6} md={4}>
                 <Card
                   sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
@@ -96,19 +113,19 @@ export default function Menu() {
                   <CardMedia
                     component="div"
                     sx={{
-                      pt: '56.25%',
+                      pt: '90%',
                     }}
-                    image="https://source.unsplash.com/random?wallpapers"
+                    image={burger.img}
                   />
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography gutterBottom variant="h5" component="h2">
                       {burger.name}
                     </Typography>
                     <Typography>
-                      Price: ${burger.price}
+                      Precio: ${burger.price}
                     </Typography>
                     <TextField
-                      label="Quantity"
+                      label="Cantidad"
                       type="number"
                       inputProps={{ min: 1 }} // Ensure minimum quantity is 1
                       value={quantity}
@@ -118,7 +135,7 @@ export default function Menu() {
                     />
                   </CardContent>
                   <CardActions>
-                    <Button size="small" onClick={() => addToCart(burger, quantity)}>Add to Cart</Button>
+                    <Button variant="contained" fullWidth onClick={() => addToCart(burger, quantity)}>Agrear al carrito</Button>
                   </CardActions>
                 </Card>
               </Grid>
@@ -130,17 +147,6 @@ export default function Menu() {
       </main>
       {/* Footer */}
       <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          color="text.secondary"
-          component="p"
-        >
-          Something here to give the footer a purpose!
-        </Typography>
         <Footer />
       </Box>
       {/* End footer */}

@@ -1,7 +1,5 @@
-import React from 'react';
-import logo from './logo.svg';
+
 import './App.css';
-import Header from './modules/sections/header'
 import Menu from './pages/menu'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
@@ -12,6 +10,7 @@ const Contact = () => <div>Contact Page</div>;
 function App() {
   return (
     <div className="App">
+      <div className='mosaicBackground'></div>
       <Router>
         <Routes>
           <Route path="/" element={<Menu />} />
