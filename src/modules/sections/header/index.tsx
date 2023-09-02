@@ -1,6 +1,7 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import { WindowOutlined } from '@mui/icons-material';
 // ... (previous imports)
 
 function Header() {
@@ -13,14 +14,22 @@ function Header() {
     const closeMenu = () => {
       setAnchorEl(null);
     };
+    const downloadMenu = () => {
+      window.open('https://purosaborps.com/menups.pdf', '_blank');
+      closeMenu();
+    };
+    const contactUs = () => {
+      window.open('https://wa.me/50685194028', '_blank');
+      closeMenu();
+    };
   
     return (
       <AppBar position="static" sx={{ backgroundColor: '#FF0000' }}>
         <Toolbar>
-          <Typography align='center' variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography align='left' variant="h6" component="div" sx={{ flexGrow: 1 }}>
           🍔 Puro Sabor | Comida Artesanal
           </Typography>
-          { /*isMobile ? (
+          { isMobile ? (
             <>
               <IconButton
                 size="large"
@@ -36,16 +45,16 @@ function Header() {
                 open={Boolean(anchorEl)}
                 onClose={closeMenu}
               >
-                <MenuItem onClick={closeMenu}>Menu</MenuItem>
-                <MenuItem onClick={closeMenu}>Contacto</MenuItem>
+                <MenuItem onClick={downloadMenu}>Descargar Menú 🍔</MenuItem>
+                <MenuItem onClick={contactUs}>Contacto 📲</MenuItem>
               </Menu>
             </>
           ) : (
             <>
-              <MenuItem>Menú</MenuItem>
-              <MenuItem>Contacto</MenuItem>
+              <MenuItem onClick={downloadMenu}>Descargar Menú 🍔</MenuItem>
+              <MenuItem onClick={contactUs}>Contacto 📲</MenuItem>
             </>
-          )*/}
+          )}
         </Toolbar>
       </AppBar>
     );

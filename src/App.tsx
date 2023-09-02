@@ -14,6 +14,8 @@ function App() {
     <>
       <Helmet>
           <title>Puro Sabor | Ordená en Línea 🛍️📲</title>
+          <meta name="description" content="Sabores únicos y entrega rápida. ¡Ordená tus 🍔🍔 ahora y disfruta de la perfección de la hamburguesa en casa!" />
+        
       </Helmet>
       <div className="App">
         <ToastContainer />  
