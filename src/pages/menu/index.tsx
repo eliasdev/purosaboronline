@@ -25,6 +25,10 @@ import ImgSpecial from "../../assets/menu/special.png";
 import ImgSweet from "../../assets/menu/sweet.png";
 import ImgNewYork from "../../assets/menu/newyork.png";
 import ImgVeggie from "../../assets/menu/veggie.png";
+import ImgCoca from "../../assets/menu/coca.png";
+import ImgCocaSinAzucar from "../../assets/menu/cocazucar.png";
+import ImgTropical from "../../assets/menu/tropical.png";
+import ImgHtwoO from "../../assets/menu/h2o.png";
 import { isMobile } from 'react-device-detect';
 import { Divider } from '@mui/material';
 
@@ -32,15 +36,19 @@ import { Divider } from '@mui/material';
 const defaultTheme = createTheme();
 
 const burgerData: CartItem[] = [
-  { name: 'Special Taste', price: 5500, img: ImgSpecial, quantity: 1, available: true},
-  { name: 'Chicago', price: 5500, img: ImgChicago, quantity: 1, available: true },
-  { name: 'Pulled Pork', price: 5500, img: ImgPulledPork, quantity: 1, available: true },
-  { name: 'Big One', price: 5500, img: ImgBigOne, quantity: 1, available: true },
-  { name: 'New York', price: 4500, img: ImgNewYork, quantity: 1, available: true },
-  { name: 'Italiana', price: 5500, img: ImgItaliana, quantity: 1, available: true },
-  { name: 'Mexicana', price: 5500, img: ImgMexicana, quantity: 1, available: true },
-  { name: 'Sweet Explosion', price: 5500, img: ImgSweet, quantity: 1, available: true },
-  { name: 'Veggie', price: 6500, img: ImgVeggie, quantity: 1, available: false }
+  { name: 'Special Taste 🍔', price: 5500, img: ImgSpecial, quantity: 1, available: true},
+  { name: 'Chicago 🍔', price: 5500, img: ImgChicago, quantity: 1, available: true },
+  { name: 'Pulled Pork 🍔', price: 5500, img: ImgPulledPork, quantity: 1, available: true },
+  { name: 'Big One 🍔', price: 5500, img: ImgBigOne, quantity: 1, available: true },
+  { name: 'New York 🍔', price: 4500, img: ImgNewYork, quantity: 1, available: true },
+  { name: 'Italiana 🍔', price: 5500, img: ImgItaliana, quantity: 1, available: true },
+  { name: 'Mexicana 🍔', price: 5500, img: ImgMexicana, quantity: 1, available: true },
+  { name: 'Sweet Explosion 🍔', price: 5500, img: ImgSweet, quantity: 1, available: true },
+  { name: 'Veggie 🍔', price: 6500, img: ImgVeggie, quantity: 1, available: false },
+  { name: 'Coca Cola Regular 🥤 600ml', price: 6500, img: ImgCoca, quantity: 1, available: true },
+  { name: 'Coca Cola (sin azúcar) 🥤 600ml', price: 6500, img: ImgCocaSinAzucar, quantity: 1, available: true },
+  { name: 'Tropical Melocotón 🥤 600ml', price: 6500, img: ImgTropical, quantity: 1, available: true },
+  { name: 'H2O 🥤 600ml', price: 6500, img: ImgHtwoO, quantity: 1, available: true }
 ];
 
 export default function Menu() {
@@ -127,7 +135,7 @@ export default function Menu() {
                   <CardMedia
                     component="div"
                     sx={{
-                      pt: '90%',
+                      pt: '95%',
                     }}
                     image={burger.img}
                   />
