@@ -45,10 +45,10 @@ const burgerData: CartItem[] = [
   { name: 'Mexicana 🍔', price: 5500, img: ImgMexicana, quantity: 1, available: true },
   { name: 'Sweet Explosion 🍔', price: 5500, img: ImgSweet, quantity: 1, available: true },
   { name: 'Veggie 🍔', price: 6500, img: ImgVeggie, quantity: 1, available: false },
-  { name: 'Coca Cola Regular 🥤 600ml', price: 6500, img: ImgCoca, quantity: 1, available: true },
-  { name: 'Coca Cola (sin azúcar) 🥤 600ml', price: 6500, img: ImgCocaSinAzucar, quantity: 1, available: true },
-  { name: 'Tropical Melocotón 🥤 600ml', price: 6500, img: ImgTropical, quantity: 1, available: true },
-  { name: 'H2O 🥤 600ml', price: 6500, img: ImgHtwoO, quantity: 1, available: true }
+  { name: 'Coca Cola Regular 🥤 600ml', price: 1000, img: ImgCoca, quantity: 1, available: true },
+  { name: 'Coca Cola (sin azúcar) 🥤 600ml', price: 1000, img: ImgCocaSinAzucar, quantity: 1, available: true },
+  { name: 'Tropical Melocotón 🥤 600ml', price: 1000, img: ImgTropical, quantity: 1, available: true },
+  { name: 'H2O 🥤 600ml', price: 1000, img: ImgHtwoO, quantity: 1, available: true }
 ];
 
 export default function Menu() {
