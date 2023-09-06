@@ -16,50 +16,37 @@ import CartModal from '../../modules/components/cartModal';
 import { CartItem } from '../../types/index'; // Import the CartItem type
 import TextField from '@mui/material/TextField';
 import "./index.css";
-import ImgBigOne from "../../assets/menu/bigone.png";
-import ImgChicago from "../../assets/menu/chicago.png";
-import ImgPulledPork from "../../assets/menu/pulled.png";
-import ImgMexicana from "../../assets/menu/mexicana.png";
-import ImgItaliana from "../../assets/menu/italiana.png";
-import ImgSpecial from "../../assets/menu/special.png";
-import ImgSweet from "../../assets/menu/sweet.png";
-import ImgNewYork from "../../assets/menu/newyork.png";
-import ImgVeggie from "../../assets/menu/veggie.png";
-import ImgCoca from "../../assets/menu/coca.png";
-import ImgCocaSinAzucar from "../../assets/menu/cocazucar.png";
-import ImgTropical from "../../assets/menu/tropical.png";
-import ImgHtwoO from "../../assets/menu/h2o.png";
 import { isMobile } from 'react-device-detect';
 import { Divider } from '@mui/material';
+import { burgerData } from './data';
 
-// TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-const burgerData: CartItem[] = [
-  { name: 'Special Taste 🍔', price: 5500, img: ImgSpecial, quantity: 1, available: true},
-  { name: 'Chicago 🍔', price: 5500, img: ImgChicago, quantity: 1, available: true },
-  { name: 'Pulled Pork 🍔', price: 5500, img: ImgPulledPork, quantity: 1, available: true },
-  { name: 'Big One 🍔', price: 5500, img: ImgBigOne, quantity: 1, available: true },
-  { name: 'New York 🍔', price: 4500, img: ImgNewYork, quantity: 1, available: true },
-  { name: 'Italiana 🍔', price: 5500, img: ImgItaliana, quantity: 1, available: true },
-  { name: 'Mexicana 🍔', price: 5500, img: ImgMexicana, quantity: 1, available: true },
-  { name: 'Sweet Explosion 🍔', price: 5500, img: ImgSweet, quantity: 1, available: true },
-  { name: 'Veggie 🍔', price: 6500, img: ImgVeggie, quantity: 1, available: false },
-  { name: 'Coca Cola Regular 🥤 600ml', price: 1000, img: ImgCoca, quantity: 1, available: true },
-  { name: 'Coca Cola (sin azúcar) 🥤 600ml', price: 1000, img: ImgCocaSinAzucar, quantity: 1, available: true },
-  { name: 'Tropical Melocotón 🥤 600ml', price: 1000, img: ImgTropical, quantity: 1, available: true },
-  { name: 'H2O 🥤 600ml', price: 1000, img: ImgHtwoO, quantity: 1, available: true }
-];
-
 export default function Menu() {
-
   const shuffleArray = (array: any[]) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
+    // Group items by category
+    const groupedByCategory: { [key: string]: any[] } = {};
+    array.forEach((item) => {
+      const category = item.category || 'Uncategorized'; // Use 'Uncategorized' as the default category if none is provided
+      if (!groupedByCategory[category]) {
+        groupedByCategory[category] = [];
+      }
+      groupedByCategory[category].push(item);
+    });
+  
+    // Shuffle each category individually
+    const shuffledArray: any[] = [];
+    Object.values(groupedByCategory).forEach((categoryItems) => {
+      for (let i = categoryItems.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [categoryItems[i], categoryItems[j]] = [categoryItems[j], categoryItems[i]];
+      }
+      shuffledArray.push(...categoryItems);
+    });
+  
+    return shuffledArray;
   };
+  
   
   
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -73,7 +60,6 @@ export default function Menu() {
 
   const addToCart = (item: CartItem) => {
     const existingItemIndex = cartItems.findIndex((cartItem) => cartItem.name === item.name);
-  
     if (existingItemIndex !== -1) {
       // Item already exists, increase its quantity
       const updatedCartItems = [...cartItems];
@@ -83,7 +69,6 @@ export default function Menu() {
       // Item doesn't exist, add it to the cart
       setCartItems((prevCartItems) => [...prevCartItems, item]);
     }
-  
     handleCartToggle();
   };
   
@@ -121,7 +106,7 @@ export default function Menu() {
           <Divider/>
           <Typography variant="h5" align="center" color="text.secondary" paragraph
             sx={{ fontSize: { lg: '1.3em', xs: '0.8em' }, paddingLeft: 6, paddingRight: 6, pt: {lg:4, xs:2}, pb: {lg:0, xs:3} }}>
-            Elige tus hamburguesas favoritas, selecciona la cantidad y haz clic en el botón 'Agregar al carrito' para realizar tu pedido en línea.<br/> Todas las hamburguesas incluyen una orden de papas gajo 🍟 
+            Elige tus hamburguesas favoritas, selecciona la cantidad y haz clic en el botón 'Agregar al carrito' para realizar tu pedido en línea.<br/> Todas las hamburguesas incluyen una orden de tus papas favoritas 🍟 
           </Typography>
         </Container>
 

@@ -5,5 +5,6 @@ export interface CartItem {
     quantity: number;
     img: string;
     available: boolean;
+    category: string;
   }
   
