@@ -5,9 +5,10 @@ interface TagProps {
   label: string;
   price: number;
   onTagToggle: (label: string, price: number) => void;
+  action: (label: string, price: number) => void;
 }
 
-const Tag: React.FC<TagProps> = ({ label, price, onTagToggle }) => {
+const Tag: React.FC<TagProps> = ({ label, price, onTagToggle, action }) => {
   const [enabled, setEnabled] = useState(false);
   const bgColor = enabled ? '#008000' : '#e0e0e0';
   const textColor = enabled ? '#FFFFFF' : '#000000';
@@ -21,11 +22,15 @@ const Tag: React.FC<TagProps> = ({ label, price, onTagToggle }) => {
     setEnabled(!enabled);
   };
 
+  const handleClickAnotherWay = () => {
+    action(label, price)
+  };
+
   return (
     <Chip
-      label={price > 0 ? `${label} - $${price}` : label} // Conditionally display the price
+      label={price > 0 ? `${label} - ₡${price}` : label} // Conditionally display the price
       clickable
-      onClick={handleClick}
+      onClick={handleClickAnotherWay}
       sx={{
         backgroundColor: bgColor, // Grayed out when disabled
         color: textColor, // Text color

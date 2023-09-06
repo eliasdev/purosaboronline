@@ -17,42 +17,34 @@ interface CartModalProps {
   onClose: () => void;
   onEmptyCart: () => void;
   cartItems: CartItem[];
+  index: number;
 }
 
-const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, cartItems }) => {
+const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, cartItems, index }) => {
 
   const [backdropClicked, setBackdropClicked] = useState(false);
   const [customerName, setCustomerName] = useState('');
+  const [currentInfo, setCurrentInfo] = useState(cartItems);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [selectedTags, setSelectedTags] = useState<{ [key: string]: number }>({});
-
-  const cartTotal = useMemo(() => {
-    let totalPrice = 0;
-    for (const item of cartItems) {
-      totalPrice += item.price + (selectedTags[item.name] || 0);
-    }
-    return totalPrice;
-  }, [cartItems, selectedTags]);
 
   useEffect(() => {
     if (!isOpen) {
       return;
     }
-
     setShowConfirmation(false);
-  }, [isOpen]);
+    setCurrentInfo(cartItems);
+  }, [isOpen, currentInfo]);
 
   const handleTagToggle = (label: string, price: number) => {
-    // Check if the tag is already selected, and if the price is the same, do nothing
-    if (selectedTags[label] === price) {
-      return;
-    }
+  };
 
-    setSelectedTags((prevSelectedTags) => ({
-      ...prevSelectedTags,
-      [label]: price,
-    }));
+  const handleTagClick = (label: string, price: number) => {
+    const _data = cartItems;
+    if (_data[index].price) {
+      _data[index].price = _data[index]?.price + price;
+      setCurrentInfo(_data);
+    }
   };
 
   const handleConfirmCheckout = () => {
@@ -72,7 +64,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
   const sendMessage = () => {
     if (customerName && phoneNumber) {
       const formattedOrderText = `Cliente: ${customerName} %0aNúmero de teléfono: ${phoneNumber}%0a
-    %0aConfirmación de la orden:%0a%0a${cartItems.map(item => `${item.name} x${item.quantity} - ₡${item.price}`).join('%0a')}%0a%0aTotal: ₡${cartTotal.toFixed(0)} colones%0a%0a*NO OLVIDES ENVIAR ESTE MENSAJE*`;
+    %0aConfirmación de la orden:%0a%0a${cartItems.map(item => `${item.name} x${item.quantity} - ₡${item.price}`).join('%0a')}%0a%0aTotal: ₡${123} colones%0a%0a*NO OLVIDES ENVIAR ESTE MENSAJE*`;
       window.open(('https://wa.me/50685194028?text=' + formattedOrderText), '_blank');
     } else {
       toast.error('Ingresa tu información personal para completar tu orden.', {
@@ -108,7 +100,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                   </List>
                 </Paper>
                 <Typography fontSize="1.5em" variant="subtitle1" gutterBottom paddingTop={2} fontWeight="bold">
-                  Total: ₡{cartTotal.toFixed(0)} colones
+                  Total: ₡{123} colones
                 </Typography>
                 <TextField
                   label="Ingresa tu nombre completo"
@@ -151,22 +143,22 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                 </Typography>
                 <Paper style={{ maxHeight: '200px', overflowY: 'auto' }}>
                   <List>
-                    {cartItems.map((item, index) => (
+                    {currentInfo.map((item, index) => (
                       <ListItem key={index}>
                         <ListItemText
                           primary={`${item.name} x${item.quantity}`}
                           secondary={`₡${item.price}`}
                         />
-                        <Tag label="sin cebolla" price={0} onTagToggle={handleTagToggle} />
-                        <Tag label="doble queso" price={300} onTagToggle={handleTagToggle} />
-                        <Tag label="doble torta" price={1000} onTagToggle={handleTagToggle} />
-                        <Tag label="peninillos extra" price={300} onTagToggle={handleTagToggle} />
+                        <Tag label="sin cebolla" price={0} onTagToggle={handleTagToggle} action={() => handleTagClick('sin cebolla', 0)} />
+                        <Tag label="doble queso" price={300} onTagToggle={handleTagToggle} action={() => handleTagClick('doble queso', 300)} />
+                        <Tag label="doble torta" price={1000} onTagToggle={handleTagToggle} action={() => handleTagClick('doble torta', 1000)} />
+                        <Tag label="peninillos extra" price={300} onTagToggle={handleTagToggle} action={() => handleTagClick('pepinillos extra', 300)} />
                       </ListItem>
                     ))}
                   </List>
                 </Paper>
                 <Typography fontSize={1.5} variant="subtitle1" gutterBottom paddingTop={2} paddingBottom={2} fontWeight="bold">
-                  Total: ₡{cartTotal.toFixed(0)} colones
+                  Total: ₡{123} colones
                 </Typography>
                 <div className="button-group">
                   <Button

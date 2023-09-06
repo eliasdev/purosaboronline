@@ -50,6 +50,7 @@ export default function Menu() {
   
   
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [itemId, setItemId] = useState(-1);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [randomBurgerData, setRandomBurgerData] = useState<CartItem[]>(shuffleArray(
     burgerData.map(item => ({ ...item, quantity: 1 }))));
@@ -58,7 +59,8 @@ export default function Menu() {
     setIsCartOpen(!isCartOpen);
   };
 
-  const addToCart = (item: CartItem) => {
+  const addToCart = (item: CartItem, index: number) => {
+    setItemId(index);
     const existingItemIndex = cartItems.findIndex((cartItem) => cartItem.name === item.name);
     if (existingItemIndex !== -1) {
       // Item already exists, increase its quantity
@@ -81,7 +83,7 @@ export default function Menu() {
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <Header />
-      <CartModal isOpen={isCartOpen} onEmptyCart={handleEmptyCart} onClose={handleCartToggle} cartItems={cartItems} />
+      <CartModal isOpen={isCartOpen} onEmptyCart={handleEmptyCart} onClose={handleCartToggle} cartItems={cartItems} index={itemId} />
 
       <main>
       <Container
@@ -150,7 +152,7 @@ export default function Menu() {
                   <CardActions>
 
                     {burger.available ? (
-                      <Button variant="contained" fullWidth onClick={() => addToCart(burger)}>Agregar al carrito</Button>) : 
+                      <Button variant="contained" fullWidth onClick={() => addToCart(burger, index)}>Agregar al carrito</Button>) : 
                       (<Button variant="contained" disabled fullWidth onClick={() => alert('Muy Pronto!')}>Muy Pronto!</Button> ) }
 
                    
