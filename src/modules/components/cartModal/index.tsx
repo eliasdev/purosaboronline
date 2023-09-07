@@ -22,11 +22,11 @@ interface CartModalProps {
 
 const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, cartItems, index }) => {
 
-  const [backdropClicked, setBackdropClicked] = useState(false);
   const [customerName, setCustomerName] = useState('');
   const [currentInfo, setCurrentInfo] = useState(cartItems);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [renderToggle, setRenderToggle] = useState(false);
 
   useEffect(() => {
     if (!isOpen) {
@@ -34,17 +34,19 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
     }
     setShowConfirmation(false);
     setCurrentInfo(cartItems);
-  }, [isOpen, currentInfo]);
+  }, [isOpen, currentInfo, renderToggle]);
 
-  const handleTagToggle = (label: string, price: number) => {
-  };
 
   const handleTagClick = (label: string, price: number) => {
     const _data = cartItems;
-    if (_data[index].price) {
+    
+    if (_data[index]?.price) {
       _data[index].price = _data[index]?.price + price;
       setCurrentInfo(_data);
+      console.log( currentInfo );
+      
     }
+    setRenderToggle(!renderToggle);
   };
 
   const handleConfirmCheckout = () => {
@@ -149,10 +151,10 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                           primary={`${item.name} x${item.quantity}`}
                           secondary={`₡${item.price}`}
                         />
-                        <Tag label="sin cebolla" price={0} onTagToggle={handleTagToggle} action={() => handleTagClick('sin cebolla', 0)} />
-                        <Tag label="doble queso" price={300} onTagToggle={handleTagToggle} action={() => handleTagClick('doble queso', 300)} />
-                        <Tag label="doble torta" price={1000} onTagToggle={handleTagToggle} action={() => handleTagClick('doble torta', 1000)} />
-                        <Tag label="peninillos extra" price={300} onTagToggle={handleTagToggle} action={() => handleTagClick('pepinillos extra', 300)} />
+                        <Tag label="sin cebolla" price={0}  action={() => handleTagClick('sin cebolla', 0)} />
+                        <Tag label="doble queso" price={300} action={() => handleTagClick('doble queso', 300)} />
+                        <Tag label="doble torta" price={1000} action={() => handleTagClick('doble torta', 1000)} />
+                        <Tag label="peninillos extra" price={300} action={() => handleTagClick('pepinillos extra', 300)} />
                       </ListItem>
                     ))}
                   </List>
