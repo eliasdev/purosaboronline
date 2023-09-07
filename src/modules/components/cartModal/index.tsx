@@ -1,10 +1,20 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Modal, Button, List, ListItem, ListItemText, Typography, TextField, Paper, Backdrop } from '@mui/material';
+import {
+  Modal,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+  TextField,
+  Paper,
+  Backdrop,
+} from '@mui/material';
 import './index.css';
 import { isMobile } from 'react-device-detect';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; 
-import Tag from "../tag";
+import 'react-toastify/dist/ReactToastify.css';
+import Tag from '../tag';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Grid from '@mui/material/Grid';
@@ -24,8 +34,12 @@ interface CartModalProps {
   cartItems: CartItem[];
 }
 
-const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, cartItems }) => {
-
+const CartModal: React.FC<CartModalProps> = ({
+  isOpen,
+  onClose,
+  onEmptyCart,
+  cartItems,
+}) => {
   const [customerName, setCustomerName] = useState('');
   const [currentOrder, setCurrentOrder] = useState(cartItems);
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -37,20 +51,29 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
       return;
     }
     let total = 0;
-    cartItems.forEach(item => {
+
+    cartItems.forEach((item) => {
       total += item.price * item.quantity; // Calculate total price with quantity
     });
     setCartTotal(total);
+    console.log(currentOrder);
+    if (currentOrder.length <= 0 || currentOrder.length < cartItems.length) {
+      setCurrentOrder(cartItems);
+    }
     setShowConfirmation(false);
-    setCurrentOrder(cartItems);
+    // ;
   }, [isOpen, currentOrder, renderToggle]);
 
-
-  const handleTagClick = (label: string, price: number, enabled: boolean, pIndex: number) => {
+  const handleTagClick = (
+    label: string,
+    price: number,
+    enabled: boolean,
+    pIndex: number
+  ) => {
     const _data = [...cartItems]; // Clone the cartItems array
-    console.log("cart index:", pIndex );
-    console.log("enabled: ", enabled );
-    console.log( _data[pIndex]?.name );
+    console.log('cart index:', pIndex);
+    console.log('enabled: ', enabled);
+    console.log(_data[pIndex]?.name);
     if (_data[pIndex]?.price) {
       if (!enabled) {
         // Create a new 'extras' array for the specific item at the given index
@@ -63,13 +86,15 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
         // Remove the extra with the given label from the 'extras' array
         _data[pIndex] = {
           ..._data[pIndex],
-          extras: (_data[pIndex].extras || []).filter(extra => extra.label !== label),
+          extras: (_data[pIndex].extras || []).filter(
+            (extra) => extra.label !== label
+          ),
           price: _data[pIndex].price - price,
         };
       }
 
       setCurrentOrder(_data);
-      console.log( currentOrder );
+      // console.log(currentOrder);
     }
 
     setRenderToggle(!renderToggle);
@@ -89,16 +114,23 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
     sendMessage();
   };
 
-  const removeFromCart = ( pIndex: number ) => {
-    currentOrder.splice( pIndex, 1 );
+  const removeFromCart = (pIndex: number) => {
+    currentOrder.splice(pIndex, 1);
     setRenderToggle(!renderToggle);
-  }
+  };
 
   const sendMessage = () => {
     if (customerName && phoneNumber) {
       const formattedOrderText = `Cliente: ${customerName} %0aNúmero de teléfono: ${phoneNumber}%0a
-    %0aConfirmación de la orden:%0a%0a${cartItems.map(item => `${item.name} x${item.quantity} - ₡${item.price}`).join('%0a')}%0a%0aTotal: ₡${123} colones%0a%0a*NO OLVIDES ENVIAR ESTE MENSAJE*`;
-      window.open(('https://wa.me/50685194028?text=' + formattedOrderText), '_blank');
+    %0aConfirmación de la orden:%0a%0a${cartItems
+      .map((item) => `${item.name} x${item.quantity} - ₡${item.price}`)
+      .join(
+        '%0a'
+      )}%0a%0aTotal: ₡${123} colones%0a%0a*NO OLVIDES ENVIAR ESTE MENSAJE*`;
+      window.open(
+        'https://wa.me/50685194028?text=' + formattedOrderText,
+        '_blank'
+      );
     } else {
       toast.error('Ingresa tu información personal para completar tu orden.', {
         position: toast.POSITION.TOP_CENTER,
@@ -111,11 +143,17 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
       <div>
         <Backdrop open={isOpen} onClick={onClose} style={{ zIndex: 9999 }} />
         <div className="modal-overlay">
-          <div className="modal-content" style={{ width: isMobile ? "90%" : "60%" }}>
-
+          <div
+            className="modal-content"
+            style={{ width: isMobile ? '90%' : '60%' }}
+          >
             {showConfirmation ? (
               <div>
-                <Typography sx={{ fontSize: { xs:"1em", lg: "2em" }}} variant="h5" gutterBottom>
+                <Typography
+                  sx={{ fontSize: { xs: '1em', lg: '2em' } }}
+                  variant="h5"
+                  gutterBottom
+                >
                   Confirma tu orden en Puro Sabor ✅
                 </Typography>
                 <Paper style={{ maxHeight: '300px', overflowY: 'auto' }}>
@@ -124,15 +162,28 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                       <ListItem style={{ height: '50px' }} key={index}>
                         <ListItemText
                           disableTypography
-                          sx={{ fontSize: { lg: "1.2em", xs: "1em" } }}
-                          primary={`${item.name} x${item.quantity}${( ( item.category == "dish" )? '-🍔': ( item.category == "beverage"? '🥤' : '' ) ).repeat(item.quantity)}`}
+                          sx={{ fontSize: { lg: '1.2em', xs: '1em' } }}
+                          primary={`${item.name} x${
+                            item.quantity
+                          }${(item.category == 'dish'
+                            ? '-🍔'
+                            : item.category == 'beverage'
+                            ? '🥤'
+                            : ''
+                          ).repeat(item.quantity)}`}
                           secondary={` | ₡${item.price}`}
                         />
                       </ListItem>
                     ))}
                   </List>
                 </Paper>
-                <Typography fontSize="1.5em" variant="subtitle1" gutterBottom paddingTop={2} fontWeight="bold">
+                <Typography
+                  fontSize="1.5em"
+                  variant="subtitle1"
+                  gutterBottom
+                  paddingTop={2}
+                  fontWeight="bold"
+                >
                   Total: ₡{cartTotal.toFixed(0)} colones
                 </Typography>
                 <TextField
@@ -171,7 +222,11 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
               </div>
             ) : (
               <div>
-                <Typography sx={{ fontSize: { xs:"1em", lg: "2em" }}} variant="h5" gutterBottom>
+                <Typography
+                  sx={{ fontSize: { xs: '1em', lg: '2em' } }}
+                  variant="h5"
+                  gutterBottom
+                >
                   Carrito de Compras 🛒
                 </Typography>
                 <Paper style={{ maxHeight: '200px', overflowY: 'auto' }}>
@@ -179,20 +234,36 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                     {currentOrder.map((item, index) => (
                       <ListItem key={index}>
                         <Grid container spacing={2} alignItems="center">
-                          <Grid item xs={12} lg={(item.category == "dish")? 1.7 : 11 }>
+                          <Grid
+                            item
+                            xs={12}
+                            lg={item.category == 'dish' ? 1.7 : 11}
+                          >
                             <ListItemText
                               primary={`${item.name} x${item.quantity}`}
                               secondary={`₡${item.price}`}
                             />
                           </Grid>
-                          <Grid sx={{display:(item.category == "dish")? "" : "none" }} item xs={12} lg={9}>
+                          <Grid
+                            sx={{
+                              display: item.category == 'dish' ? '' : 'none',
+                            }}
+                            item
+                            xs={12}
+                            lg={9}
+                          >
                             <Grid container spacing={1}>
                               <Grid item xs={12} lg={2.1}>
                                 <Tag
                                   label="sin cebolla"
                                   price={0}
                                   action={(label, price, isEnabled) =>
-                                    handleTagClick(label, price, isEnabled, index)
+                                    handleTagClick(
+                                      label,
+                                      price,
+                                      isEnabled,
+                                      index
+                                    )
                                   }
                                   isEnabled={false}
                                 />
@@ -202,7 +273,12 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                                   label="doble queso"
                                   price={300}
                                   action={(label, price, isEnabled) =>
-                                    handleTagClick(label, price, isEnabled, index)
+                                    handleTagClick(
+                                      label,
+                                      price,
+                                      isEnabled,
+                                      index
+                                    )
                                   }
                                   isEnabled={false}
                                 />
@@ -212,7 +288,12 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                                   label="doble torta"
                                   price={1000}
                                   action={(label, price, isEnabled) =>
-                                    handleTagClick(label, price, isEnabled, index)
+                                    handleTagClick(
+                                      label,
+                                      price,
+                                      isEnabled,
+                                      index
+                                    )
                                   }
                                   isEnabled={false}
                                 />
@@ -222,7 +303,12 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                                   label="pepinillos extra"
                                   price={300}
                                   action={(label, price, isEnabled) =>
-                                    handleTagClick(label, price, isEnabled, index)
+                                    handleTagClick(
+                                      label,
+                                      price,
+                                      isEnabled,
+                                      index
+                                    )
                                   }
                                   isEnabled={false}
                                 />
@@ -235,7 +321,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                               aria-label="Delete"
                               onClick={() => removeFromCart(index)}
                             >
-                              {isMobile? "Eliminar" : ""} <DeleteIcon />
+                              {isMobile ? 'Eliminar' : ''} <DeleteIcon />
                             </IconButton>
                           </Grid>
                         </Grid>
@@ -243,7 +329,13 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                     ))}
                   </List>
                 </Paper>
-                <Typography variant="subtitle1" gutterBottom paddingTop={2} paddingBottom={2} fontWeight="bold">
+                <Typography
+                  variant="subtitle1"
+                  gutterBottom
+                  paddingTop={2}
+                  paddingBottom={2}
+                  fontWeight="bold"
+                >
                   Total: ₡{cartTotal.toFixed(0)} colones
                 </Typography>
                 <div className="button-group">
