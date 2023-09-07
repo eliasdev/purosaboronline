@@ -15,11 +15,10 @@ interface CartItem {
 interface CartModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onEmptyCart: () => void;
   cartItems: CartItem[];
 }
 
-const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, cartItems }) => {
+const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, cartItems }) => {
 
   const [backdropClicked, setBackdropClicked] = useState(false);
   const [cartTotal, setCartTotal] = useState(0);
@@ -162,10 +161,10 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={onEmptyCart}
+                  onClick={onClose}
                   sx={{ mr: '10px', width:'43%' }}
                 >
-                  Vaciar Carrito
+                  Volver al Menú
                 </Button>
                 <Button
                   sx={{width:'52%'}}

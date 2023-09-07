@@ -58,11 +58,30 @@ const burgerData: CartItem[] = [
 export default function Menu() {
 
   const shuffleArray = (array: any[]) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
+    // Group items by category
+    const groupedByCategory: { [key: string]: any[] } = {};
+    array.forEach((item) => {
+      const category = item.category || 'Uncategorized'; // Use 'Uncategorized' as the default category if none is provided
+      if (!groupedByCategory[category]) {
+        groupedByCategory[category] = [];
+      }
+      groupedByCategory[category].push(item);
+    });
+
+    // Shuffle each category individually
+    const shuffledArray: any[] = [];
+    Object.values(groupedByCategory).forEach((categoryItems) => {
+      for (let i = categoryItems.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [categoryItems[i], categoryItems[j]] = [
+          categoryItems[j],
+          categoryItems[i],
+        ];
+      }
+      shuffledArray.push(...categoryItems);
+    });
+
+    return shuffledArray;
   };
   
   
@@ -100,7 +119,7 @@ export default function Menu() {
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <Header />
-      <CartModal isOpen={isCartOpen} onEmptyCart={handleEmptyCart} onClose={handleCartToggle} cartItems={cartItems} />
+      <CartModal isOpen={isCartOpen} onClose={handleCartToggle} cartItems={cartItems} />
 
       <main>
       <Container
