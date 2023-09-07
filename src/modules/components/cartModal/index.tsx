@@ -5,6 +5,9 @@ import { isMobile } from 'react-device-detect';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
 import Tag from "../tag";
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Grid from '@mui/material/Grid';
 
 interface CartItem {
   name: string;
@@ -23,18 +26,24 @@ interface CartModalProps {
 const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, cartItems, index }) => {
 
   const [customerName, setCustomerName] = useState('');
-  const [currentInfo, setCurrentInfo] = useState(cartItems);
+  const [currentOrder, setCurrentOrder] = useState(cartItems);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [renderToggle, setRenderToggle] = useState(false);
+  const [cartTotal, setCartTotal] = useState(0);
   console.log("index: " + index);
   useEffect(() => {
     if (!isOpen) {
       return;
     }
+    let total = 0;
+    cartItems.forEach(item => {
+      total += item.price * item.quantity; // Calculate total price with quantity
+    });
+    setCartTotal(total);
     setShowConfirmation(false);
-    setCurrentInfo(cartItems);
-  }, [isOpen, currentInfo, renderToggle]);
+    setCurrentOrder(cartItems);
+  }, [isOpen, currentOrder, renderToggle]);
 
 
   const handleTagClick = (label: string, price: number, enabled: boolean, pIndex: number) => {
@@ -44,8 +53,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
     console.log("new index:", pIndex );
     if (_data[index]?.price) {
       _data[index].price = ( !enabled? ( _data[index].price + price ) : ( _data[index].price - price ) );
-      setCurrentInfo(_data);
-      //console.log( currentInfo );
+      setCurrentOrder(_data);
       
     }
     setRenderToggle(!renderToggle);
@@ -64,6 +72,11 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
   const handleConfirmOrder = () => {
     sendMessage();
   };
+
+  const removeFromCart = ( pIndex: number ) => {
+    currentOrder.splice( pIndex, 1 );
+    setRenderToggle(!renderToggle);
+  }
 
   const sendMessage = () => {
     if (customerName && phoneNumber) {
@@ -104,7 +117,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                   </List>
                 </Paper>
                 <Typography fontSize="1.5em" variant="subtitle1" gutterBottom paddingTop={2} fontWeight="bold">
-                  Total: ₡{123} colones
+                  Total: ₡{cartTotal.toFixed(0)} colones
                 </Typography>
                 <TextField
                   label="Ingresa tu nombre completo"
@@ -142,36 +155,89 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
               </div>
             ) : (
               <div>
-                <Typography variant="h5" gutterBottom>
+                <Typography sx={{ fontSize: { xs:"1em", lg: "2em" }}} variant="h5" gutterBottom>
                   Carrito de Compras 🛒
                 </Typography>
                 <Paper style={{ maxHeight: '200px', overflowY: 'auto' }}>
                   <List>
-                    {currentInfo.map((item, index) => (
+                    {currentOrder.map((item, index) => (
                       <ListItem key={index}>
-                        <ListItemText
-                          primary={`${item.name} x${item.quantity}`}
-                          secondary={`₡${item.price}`}
-                        />
-                        <Tag label="sin cebolla" price={0}  action={(label, price, isEnabled) => handleTagClick(label, price, isEnabled, index)} isEnabled={false} />
-                        <Tag label="doble queso" price={300} action={(label, price, isEnabled) => handleTagClick(label, price, isEnabled, index)} isEnabled={false} />
-                        <Tag label="doble torta" price={1000} action={(label, price, isEnabled) => handleTagClick(label, price, isEnabled, index)} isEnabled={false} />
-                        <Tag label="peninillos extra" price={300} action={(label, price, isEnabled) => handleTagClick(label, price, isEnabled, index)} isEnabled={false} />
+                        <Grid container spacing={2}>
+                          <Grid item xs={12} lg={2}>
+                            <ListItemText
+                              primary={`${item.name} x${item.quantity}`}
+                              secondary={`₡${item.price}`}
+                            />
+                          </Grid>
+                          <Grid item xs={12} lg={9}>
+                            <Grid container spacing={1}>
+                              <Grid item xs={12} lg={2.3}>
+                                <Tag
+                                  label="sin cebolla"
+                                  price={0}
+                                  action={(label, price, isEnabled) =>
+                                    handleTagClick(label, price, isEnabled, index)
+                                  }
+                                  isEnabled={false}
+                                />
+                              </Grid>
+                              <Grid item xs={12} lg={3.3}>
+                                <Tag
+                                  label="doble queso"
+                                  price={300}
+                                  action={(label, price, isEnabled) =>
+                                    handleTagClick(label, price, isEnabled, index)
+                                  }
+                                  isEnabled={false}
+                                />
+                              </Grid>
+                              <Grid item xs={12} lg={3.4}>
+                                <Tag
+                                  label="doble torta"
+                                  price={1000}
+                                  action={(label, price, isEnabled) =>
+                                    handleTagClick(label, price, isEnabled, index)
+                                  }
+                                  isEnabled={false}
+                                />
+                              </Grid>
+                              <Grid item xs={12} lg={3}>
+                                <Tag
+                                  label="peninillos extra"
+                                  price={300}
+                                  action={(label, price, isEnabled) =>
+                                    handleTagClick(label, price, isEnabled, index)
+                                  }
+                                  isEnabled={false}
+                                />
+                              </Grid>
+                            </Grid>
+                          </Grid>
+                          <Grid item xs={12} lg={1}>
+                            <IconButton
+                              color="secondary"
+                              aria-label="Delete"
+                              onClick={() => removeFromCart(index)}
+                            >
+                              {isMobile? "Eliminar" : ""} <DeleteIcon />
+                            </IconButton>
+                          </Grid>
+                        </Grid>
                       </ListItem>
                     ))}
                   </List>
                 </Paper>
                 <Typography variant="subtitle1" gutterBottom paddingTop={2} paddingBottom={2} fontWeight="bold">
-                  Total: ₡{123} colones
+                  Total: ₡{cartTotal.toFixed(0)} colones
                 </Typography>
                 <div className="button-group">
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={onEmptyCart}
+                    onClick={onClose}
                     sx={{ mr: '10px', width: '43%' }}
                   >
-                    Vaciar Carrito
+                    Volver al Menú
                   </Button>
                   <Button
                     sx={{ width: '52%' }}

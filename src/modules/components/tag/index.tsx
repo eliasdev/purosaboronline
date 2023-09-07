@@ -20,14 +20,14 @@ const Tag: React.FC<TagProps> = ({ label, price, action, isEnabled }) => {
 
   return (
     <Chip
-      label={price > 0 ? `${label} - ₡${price}` : label} // Conditionally display the price
+      label={price > 0 ? `${label} + ₡${price}` : label} // Conditionally display the price
       clickable
       onClick={handleClick}
       sx={{
         backgroundColor: bgColor, // Grayed out when disabled
         color: textColor, // Text color
         borderRadius: '4px',
-        padding: '4px 8px',
+        padding: '2px 2px',
         margin: '2px 3px',
         fontWeight: 'bold',
         fontSize: '12px',
