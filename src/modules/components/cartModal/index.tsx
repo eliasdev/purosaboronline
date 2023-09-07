@@ -27,7 +27,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
   const [phoneNumber, setPhoneNumber] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [renderToggle, setRenderToggle] = useState(false);
-
+  console.log("index: " + index);
   useEffect(() => {
     if (!isOpen) {
       return;
@@ -37,13 +37,15 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
   }, [isOpen, currentInfo, renderToggle]);
 
 
-  const handleTagClick = (label: string, price: number) => {
+  const handleTagClick = (label: string, price: number, enabled: boolean, pIndex: number) => {
     const _data = cartItems;
-    
+    index = pIndex;
+    console.log("the index:", index );
+    console.log("new index:", pIndex );
     if (_data[index]?.price) {
-      _data[index].price = _data[index]?.price + price;
+      _data[index].price = ( !enabled? ( _data[index].price + price ) : ( _data[index].price - price ) );
       setCurrentInfo(_data);
-      console.log( currentInfo );
+      //console.log( currentInfo );
       
     }
     setRenderToggle(!renderToggle);
@@ -151,15 +153,15 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                           primary={`${item.name} x${item.quantity}`}
                           secondary={`₡${item.price}`}
                         />
-                        <Tag label="sin cebolla" price={0}  action={() => handleTagClick('sin cebolla', 0)} />
-                        <Tag label="doble queso" price={300} action={() => handleTagClick('doble queso', 300)} />
-                        <Tag label="doble torta" price={1000} action={() => handleTagClick('doble torta', 1000)} />
-                        <Tag label="peninillos extra" price={300} action={() => handleTagClick('pepinillos extra', 300)} />
+                        <Tag label="sin cebolla" price={0}  action={(label, price, isEnabled) => handleTagClick(label, price, isEnabled, index)} isEnabled={false} />
+                        <Tag label="doble queso" price={300} action={(label, price, isEnabled) => handleTagClick(label, price, isEnabled, index)} isEnabled={false} />
+                        <Tag label="doble torta" price={1000} action={(label, price, isEnabled) => handleTagClick(label, price, isEnabled, index)} isEnabled={false} />
+                        <Tag label="peninillos extra" price={300} action={(label, price, isEnabled) => handleTagClick(label, price, isEnabled, index)} isEnabled={false} />
                       </ListItem>
                     ))}
                   </List>
                 </Paper>
-                <Typography fontSize={1.5} variant="subtitle1" gutterBottom paddingTop={2} paddingBottom={2} fontWeight="bold">
+                <Typography variant="subtitle1" gutterBottom paddingTop={2} paddingBottom={2} fontWeight="bold">
                   Total: ₡{123} colones
                 </Typography>
                 <div className="button-group">

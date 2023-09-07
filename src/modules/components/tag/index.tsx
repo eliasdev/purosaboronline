@@ -4,17 +4,18 @@ import Chip from '@mui/material/Chip';
 interface TagProps {
   label: string;
   price: number;
-  action: (label: string, price: number) => void;
+  isEnabled: boolean;
+  action: (label: string, price: number, isEnabled: boolean) => void;
 }
 
-const Tag: React.FC<TagProps> = ({ label, price, action }) => {
+const Tag: React.FC<TagProps> = ({ label, price, action, isEnabled }) => {
   const [enabled, setEnabled] = useState(false);
   const bgColor = enabled ? '#008000' : '#e0e0e0';
   const textColor = enabled ? '#FFFFFF' : '#000000';
 
   const handleClick = () => {
     setEnabled(!enabled);
-    action(label, price)
+    action(label, price, enabled);
   };
 
   return (
