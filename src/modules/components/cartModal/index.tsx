@@ -47,18 +47,31 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
 
 
   const handleTagClick = (label: string, price: number, enabled: boolean, pIndex: number) => {
-    const _data = cartItems;
+    const _data = [...cartItems]; // Clone the cartItems array
     console.log("cart index:", pIndex );
+    console.log("enabled: ", enabled );
     console.log( _data[pIndex]?.name );
-
     if (_data[pIndex]?.price) {
-      if( !enabled ){
-        _data[pIndex]?.extras.push( { "label" : label, "price": price } );
+      if (!enabled) {
+        // Create a new 'extras' array for the specific item at the given index
+        _data[pIndex] = {
+          ..._data[pIndex],
+          extras: [...(_data[pIndex].extras || []), { label, price }],
+          price: _data[pIndex].price + price,
+        };
+      } else {
+        // Remove the extra with the given label from the 'extras' array
+        _data[pIndex] = {
+          ..._data[pIndex],
+          extras: (_data[pIndex].extras || []).filter(extra => extra.label !== label),
+          price: _data[pIndex].price - price,
+        };
       }
-      _data[pIndex].price = ( !enabled? ( _data[pIndex].price + price ) : ( _data[pIndex].price - price ) );
+
       setCurrentOrder(_data);
       console.log( currentOrder );
     }
+
     setRenderToggle(!renderToggle);
   };
 
