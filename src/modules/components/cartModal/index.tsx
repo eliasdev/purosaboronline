@@ -9,16 +9,16 @@ interface CartItem {
   name: string;
   price: number;
   quantity: number; // Add the quantity attribute
+  category: string;
 }
 
 interface CartModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onEmptyCart: () => void;
   cartItems: CartItem[];
 }
 
-const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, cartItems }) => {
+const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, cartItems }) => {
 
   const [backdropClicked, setBackdropClicked] = useState(false);
   const [cartTotal, setCartTotal] = useState(0);
@@ -80,8 +80,21 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                       <ListItemText
                         disableTypography
                         sx={{fontSize:{lg:"1.2em",xs:"1em"}}}
-                        primary={`${item.name} x${item.quantity}${'-🍔'.repeat(item.quantity)}`} // Display the quantity
+                        primary={`${item.name} x${item.quantity}${(item.category == 'dish'
+                        ? '-🍔'
+                        : ( item.category == 'beverage'
+                        ? '🥤'
+                        : '' ) ).repeat(item.quantity)}`} // Display the quantity
                         secondary={` | ₡${item.price}`}
+
+                        /*
+                        (item.category == 'dish'
+                            ? '-🍔'
+                            : ( item.category == 'beverage'
+                            ? '🥤'
+                            : '' ) )
+                          
+                            */
                       />
                     </ListItem>
                   ))}
@@ -148,10 +161,10 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={onEmptyCart}
+                  onClick={onClose}
                   sx={{ mr: '10px', width:'43%' }}
                 >
-                  Vaciar Carrito
+                  Volver al Menú
                 </Button>
                 <Button
                   sx={{width:'52%'}}

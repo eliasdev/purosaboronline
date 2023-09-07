@@ -16,19 +16,21 @@ import CartModal from '../../modules/components/cartModal';
 import { CartItem } from '../../types/index'; // Import the CartItem type
 import TextField from '@mui/material/TextField';
 import "./index.css";
-import ImgBigOne from "../../assets/menu/bigone.png";
-import ImgChicago from "../../assets/menu/chicago.png";
-import ImgPulledPork from "../../assets/menu/pulled.png";
-import ImgMexicana from "../../assets/menu/mexicana.png";
-import ImgItaliana from "../../assets/menu/italiana.png";
-import ImgSpecial from "../../assets/menu/special.png";
-import ImgSweet from "../../assets/menu/sweet.png";
-import ImgNewYork from "../../assets/menu/newyork.png";
-import ImgVeggie from "../../assets/menu/veggie.png";
-import ImgCoca from "../../assets/menu/coca.png";
-import ImgCocaSinAzucar from "../../assets/menu/cocazucar.png";
-import ImgTropical from "../../assets/menu/tropical.png";
-import ImgHtwoO from "../../assets/menu/h2o.png";
+import ImgBigOne from '../../assets/menu/bigone.png';
+import ImgChicago from '../../assets/menu/chicago.png';
+import ImgPulledPork from '../../assets/menu/pulled.png';
+import ImgMexicana from '../../assets/menu/mexicana.png';
+import ImgItaliana from '../../assets/menu/italiana.png';
+import ImgSpecial from '../../assets/menu/special.png';
+import ImgSweet from '../../assets/menu/sweet.png';
+import ImgNewYork from '../../assets/menu/newyork.png';
+import ImgVeggie from '../../assets/menu/veggie.png';
+import ImgCoca from '../../assets/menu/coca.png';
+import ImgCocaSinAzucar from '../../assets/menu/cocazucar.png';
+import ImgTropical from '../../assets/menu/tropical.png';
+import ImgHtwoO from '../../assets/menu/h2o.png';
+import ImgFriesRectangle from '../../assets/menu/papas_rectangulo.png';
+import ImgFriesWedges from '../../assets/menu/papas_gajo.png';
 import { isMobile } from 'react-device-detect';
 import { Divider } from '@mui/material';
 
@@ -36,29 +38,50 @@ import { Divider } from '@mui/material';
 const defaultTheme = createTheme();
 
 const burgerData: CartItem[] = [
-  { name: 'Special Taste 🍔', price: 5500, img: ImgSpecial, quantity: 1, available: true},
-  { name: 'Chicago 🍔', price: 5500, img: ImgChicago, quantity: 1, available: true },
-  { name: 'Pulled Pork 🍔', price: 5500, img: ImgPulledPork, quantity: 1, available: true },
-  { name: 'Big One 🍔', price: 5500, img: ImgBigOne, quantity: 1, available: true },
-  { name: 'New York 🍔', price: 4500, img: ImgNewYork, quantity: 1, available: true },
-  { name: 'Italiana 🍔', price: 5500, img: ImgItaliana, quantity: 1, available: true },
-  { name: 'Mexicana 🍔', price: 5500, img: ImgMexicana, quantity: 1, available: true },
-  { name: 'Sweet Explosion 🍔', price: 5500, img: ImgSweet, quantity: 1, available: true },
-  { name: 'Veggie 🍔', price: 6500, img: ImgVeggie, quantity: 1, available: false },
-  { name: 'Coca Cola Regular 🥤 600ml', price: 6500, img: ImgCoca, quantity: 1, available: true },
-  { name: 'Coca Cola (sin azúcar) 🥤 600ml', price: 6500, img: ImgCocaSinAzucar, quantity: 1, available: true },
-  { name: 'Tropical Melocotón 🥤 600ml', price: 6500, img: ImgTropical, quantity: 1, available: true },
-  { name: 'H2O 🥤 600ml', price: 6500, img: ImgHtwoO, quantity: 1, available: true }
+  { name: 'Special Taste', price: 3800, img: ImgSpecial, quantity: 1, available: true, category: 'dish' },
+  { name: 'Chicago', price: 5800, img: ImgChicago, quantity: 1, available: true, category: 'dish' },
+  { name: 'Pulled Pork', price: 5800, img: ImgPulledPork, quantity: 1, available: true, category: "dish" },
+  { name: 'Big One', price: 5800, img: ImgBigOne, quantity: 1, available: true, category: "dish" },
+  { name: 'New York', price: 5000, img: ImgNewYork, quantity: 1, available: true, category: "dish" },
+  { name: 'Italiana', price: 5800, img: ImgItaliana, quantity: 1, available: true, category: "dish" },
+  { name: 'Mexicana', price: 5800, img: ImgMexicana, quantity: 1, available: true, category: "dish" },
+  { name: 'Sweet Explosion', price: 5800, img: ImgSweet, quantity: 1, available: true, category: "dish" },
+  { name: 'Orden de papas regulares 🍟', price: 1800, img: ImgFriesRectangle, quantity: 1, available: true, category: "sides" },
+  { name: 'Orden de papas gajo 🍟', price: 1800, img: ImgFriesWedges, quantity: 1, available: true, category: "sides" },
+  { name: 'Veggie', price: 6500, img: ImgVeggie, quantity: 1, available: false, category: "dish" },
+  { name: 'Coca Cola Regular 600ml', price: 1000, img: ImgCoca, quantity: 1, available: true, category: "beverage" },
+  { name: 'Coca Cola (sin azúcar) 600ml', price: 1000, img: ImgCocaSinAzucar, quantity: 1, available: true, category: "beverage" },
+  { name: 'Tropical Melocotón 600ml', price: 1000, img: ImgTropical, quantity: 1, available: true, category: "beverage" },
+  { name: 'H2O 600ml', price: 1000, img: ImgHtwoO, quantity: 1, available: true, category: 'beverage' },
 ];
 
 export default function Menu() {
 
   const shuffleArray = (array: any[]) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
+    // Group items by category
+    const groupedByCategory: { [key: string]: any[] } = {};
+    array.forEach((item) => {
+      const category = item.category || 'Uncategorized'; // Use 'Uncategorized' as the default category if none is provided
+      if (!groupedByCategory[category]) {
+        groupedByCategory[category] = [];
+      }
+      groupedByCategory[category].push(item);
+    });
+
+    // Shuffle each category individually
+    const shuffledArray: any[] = [];
+    Object.values(groupedByCategory).forEach((categoryItems) => {
+      for (let i = categoryItems.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [categoryItems[i], categoryItems[j]] = [
+          categoryItems[j],
+          categoryItems[i],
+        ];
+      }
+      shuffledArray.push(...categoryItems);
+    });
+
+    return shuffledArray;
   };
   
   
@@ -96,7 +119,7 @@ export default function Menu() {
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <Header />
-      <CartModal isOpen={isCartOpen} onEmptyCart={handleEmptyCart} onClose={handleCartToggle} cartItems={cartItems} />
+      <CartModal isOpen={isCartOpen} onClose={handleCartToggle} cartItems={cartItems} />
 
       <main>
       <Container
@@ -168,8 +191,6 @@ export default function Menu() {
                       <Button variant="contained" fullWidth onClick={() => addToCart(burger)}>Agregar al carrito</Button>) : 
                       (<Button variant="contained" disabled fullWidth onClick={() => alert('Muy Pronto!')}>Muy Pronto!</Button> ) }
 
-                   
-                    
                   </CardActions>
                 </Card>
               </Grid>
