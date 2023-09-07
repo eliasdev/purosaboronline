@@ -16,19 +16,21 @@ import CartModal from '../../modules/components/cartModal';
 import { CartItem } from '../../types/index'; // Import the CartItem type
 import TextField from '@mui/material/TextField';
 import "./index.css";
-import ImgBigOne from "../../assets/menu/bigone.png";
-import ImgChicago from "../../assets/menu/chicago.png";
-import ImgPulledPork from "../../assets/menu/pulled.png";
-import ImgMexicana from "../../assets/menu/mexicana.png";
-import ImgItaliana from "../../assets/menu/italiana.png";
-import ImgSpecial from "../../assets/menu/special.png";
-import ImgSweet from "../../assets/menu/sweet.png";
-import ImgNewYork from "../../assets/menu/newyork.png";
-import ImgVeggie from "../../assets/menu/veggie.png";
-import ImgCoca from "../../assets/menu/coca.png";
-import ImgCocaSinAzucar from "../../assets/menu/cocazucar.png";
-import ImgTropical from "../../assets/menu/tropical.png";
-import ImgHtwoO from "../../assets/menu/h2o.png";
+import ImgBigOne from '../../assets/menu/bigone.png';
+import ImgChicago from '../../assets/menu/chicago.png';
+import ImgPulledPork from '../../assets/menu/pulled.png';
+import ImgMexicana from '../../assets/menu/mexicana.png';
+import ImgItaliana from '../../assets/menu/italiana.png';
+import ImgSpecial from '../../assets/menu/special.png';
+import ImgSweet from '../../assets/menu/sweet.png';
+import ImgNewYork from '../../assets/menu/newyork.png';
+import ImgVeggie from '../../assets/menu/veggie.png';
+import ImgCoca from '../../assets/menu/coca.png';
+import ImgCocaSinAzucar from '../../assets/menu/cocazucar.png';
+import ImgTropical from '../../assets/menu/tropical.png';
+import ImgHtwoO from '../../assets/menu/h2o.png';
+import ImgFriesRectangle from '../../assets/menu/papas_rectangulo.png';
+import ImgFriesWedges from '../../assets/menu/papas_gajo.png';
 import { isMobile } from 'react-device-detect';
 import { Divider } from '@mui/material';
 
@@ -49,7 +51,7 @@ const burgerData: CartItem[] = [
   { name: 'Veggie', price: 6500, img: ImgVeggie, quantity: 1, available: false, category: "dish" },
   { name: 'Coca Cola Regular 600ml', price: 1000, img: ImgCoca, quantity: 1, available: true, category: "beverage" },
   { name: 'Coca Cola (sin azúcar) 600ml', price: 1000, img: ImgCocaSinAzucar, quantity: 1, available: true, category: "beverage" },
-  { name: 'Tropical Melocotón 600ml', price: 1000, img: ImgTropical, quantity: 1, available: true, category: "beverage" },*/
+  { name: 'Tropical Melocotón 600ml', price: 1000, img: ImgTropical, quantity: 1, available: true, category: "beverage" },
   { name: 'H2O 600ml', price: 1000, img: ImgHtwoO, quantity: 1, available: true, category: 'beverage' },
 ];
 
