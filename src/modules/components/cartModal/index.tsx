@@ -13,6 +13,8 @@ interface CartItem {
   name: string;
   price: number;
   quantity: number; // Add the quantity attribute
+  category: string;
+  extras: any[];
 }
 
 interface CartModalProps {
@@ -20,10 +22,9 @@ interface CartModalProps {
   onClose: () => void;
   onEmptyCart: () => void;
   cartItems: CartItem[];
-  index: number;
 }
 
-const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, cartItems, index }) => {
+const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, cartItems }) => {
 
   const [customerName, setCustomerName] = useState('');
   const [currentOrder, setCurrentOrder] = useState(cartItems);
@@ -31,7 +32,6 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [renderToggle, setRenderToggle] = useState(false);
   const [cartTotal, setCartTotal] = useState(0);
-  console.log("index: " + index);
   useEffect(() => {
     if (!isOpen) {
       return;
@@ -48,13 +48,16 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
 
   const handleTagClick = (label: string, price: number, enabled: boolean, pIndex: number) => {
     const _data = cartItems;
-    index = pIndex;
-    console.log("the index:", index );
-    console.log("new index:", pIndex );
-    if (_data[index]?.price) {
-      _data[index].price = ( !enabled? ( _data[index].price + price ) : ( _data[index].price - price ) );
+    console.log("cart index:", pIndex );
+    console.log( _data[pIndex]?.name );
+
+    if (_data[pIndex]?.price) {
+      if( !enabled ){
+        _data[pIndex]?.extras.push( { "label" : label, "price": price } );
+      }
+      _data[pIndex].price = ( !enabled? ( _data[pIndex].price + price ) : ( _data[pIndex].price - price ) );
       setCurrentOrder(_data);
-      
+      console.log( currentOrder );
     }
     setRenderToggle(!renderToggle);
   };
@@ -99,7 +102,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
 
             {showConfirmation ? (
               <div>
-                <Typography variant="h5" gutterBottom>
+                <Typography sx={{ fontSize: { xs:"1em", lg: "2em" }}} variant="h5" gutterBottom>
                   Confirma tu orden en Puro Sabor ✅
                 </Typography>
                 <Paper style={{ maxHeight: '300px', overflowY: 'auto' }}>
@@ -109,7 +112,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                         <ListItemText
                           disableTypography
                           sx={{ fontSize: { lg: "1.2em", xs: "1em" } }}
-                          primary={`${item.name} x${item.quantity}${'-🍔'.repeat(item.quantity)}`}
+                          primary={`${item.name} x${item.quantity}${( ( item.category == "dish" )? '-🍔': ( item.category == "beverage"? '🥤' : '' ) ).repeat(item.quantity)}`}
                           secondary={` | ₡${item.price}`}
                         />
                       </ListItem>
@@ -162,16 +165,16 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                   <List>
                     {currentOrder.map((item, index) => (
                       <ListItem key={index}>
-                        <Grid container spacing={2}>
-                          <Grid item xs={12} lg={2}>
+                        <Grid container spacing={2} alignItems="center">
+                          <Grid item xs={12} lg={(item.category == "dish")? 1.7 : 11 }>
                             <ListItemText
                               primary={`${item.name} x${item.quantity}`}
                               secondary={`₡${item.price}`}
                             />
                           </Grid>
-                          <Grid item xs={12} lg={9}>
+                          <Grid sx={{display:(item.category == "dish")? "" : "none" }} item xs={12} lg={9}>
                             <Grid container spacing={1}>
-                              <Grid item xs={12} lg={2.3}>
+                              <Grid item xs={12} lg={2.1}>
                                 <Tag
                                   label="sin cebolla"
                                   price={0}
@@ -181,7 +184,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                                   isEnabled={false}
                                 />
                               </Grid>
-                              <Grid item xs={12} lg={3.3}>
+                              <Grid item xs={12} lg={3.2}>
                                 <Tag
                                   label="doble queso"
                                   price={300}
@@ -191,7 +194,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                                   isEnabled={false}
                                 />
                               </Grid>
-                              <Grid item xs={12} lg={3.4}>
+                              <Grid item xs={12} lg={3.2}>
                                 <Tag
                                   label="doble torta"
                                   price={1000}
@@ -201,9 +204,9 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onEmptyCart, car
                                   isEnabled={false}
                                 />
                               </Grid>
-                              <Grid item xs={12} lg={3}>
+                              <Grid item xs={12} lg={3.5}>
                                 <Tag
-                                  label="peninillos extra"
+                                  label="pepinillos extra"
                                   price={300}
                                   action={(label, price, isEnabled) =>
                                     handleTagClick(label, price, isEnabled, index)

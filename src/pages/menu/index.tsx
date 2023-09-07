@@ -50,7 +50,6 @@ export default function Menu() {
   
   
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [itemId, setItemId] = useState(-1);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [randomBurgerData, setRandomBurgerData] = useState<CartItem[]>(shuffleArray(
     burgerData.map(item => ({ ...item, quantity: 1 }))));
@@ -60,17 +59,17 @@ export default function Menu() {
   };
 
   const addToCart = (item: CartItem, index: number) => {
-    setItemId(index);
     const existingItemIndex = cartItems.findIndex((cartItem) => cartItem.name === item.name);
-    if (existingItemIndex !== -1) {
+    //this needs to be uncommented at the end
+    //if ( ( item.category != "dish" ) && existingItemIndex !== -1 ) {
       // Item already exists, increase its quantity
-      const updatedCartItems = [...cartItems];
-      updatedCartItems[existingItemIndex].quantity += 1;
-      setCartItems(updatedCartItems);
-    } else {
+      //const updatedCartItems = [...cartItems];
+      //updatedCartItems[existingItemIndex].quantity += 1;
+      //setCartItems(updatedCartItems);
+    //} else {
       // Item doesn't exist, add it to the cart
       setCartItems((prevCartItems) => [...prevCartItems, item]);
-    }
+    //}
     handleCartToggle();
   };
   
@@ -83,7 +82,7 @@ export default function Menu() {
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <Header />
-      <CartModal isOpen={isCartOpen} onEmptyCart={handleEmptyCart} onClose={handleCartToggle} cartItems={cartItems} index={itemId} />
+      <CartModal isOpen={isCartOpen} onEmptyCart={handleEmptyCart} onClose={handleCartToggle} cartItems={cartItems} />
 
       <main>
       <Container
