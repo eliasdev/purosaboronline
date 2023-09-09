@@ -33,26 +33,27 @@ import ImgFriesRectangle from '../../assets/menu/papas_rectangulo.png';
 import ImgFriesWedges from '../../assets/menu/papas_gajo.png';
 import { isMobile } from 'react-device-detect';
 import { Divider } from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
+
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
-
 const burgerData: CartItem[] = [
-  { name: 'Special Taste', price: 5800, img: ImgSpecial, quantity: 1, available: true, category: 'dish' },
-  { name: 'Chicago', price: 5800, img: ImgChicago, quantity: 1, available: true, category: 'dish' },
-  { name: 'Pulled Pork', price: 5800, img: ImgPulledPork, quantity: 1, available: true, category: "dish" },
-  { name: 'Big One', price: 5800, img: ImgBigOne, quantity: 1, available: true, category: "dish" },
-  { name: 'New York', price: 5000, img: ImgNewYork, quantity: 1, available: true, category: "dish" },
-  { name: 'Italiana', price: 5800, img: ImgItaliana, quantity: 1, available: true, category: "dish" },
-  { name: 'Mexicana', price: 5800, img: ImgMexicana, quantity: 1, available: true, category: "dish" },
-  { name: 'Sweet Explosion', price: 5800, img: ImgSweet, quantity: 1, available: true, category: "dish" },
-  { name: 'Orden de papas regulares 🍟', price: 1800, img: ImgFriesRectangle, quantity: 1, available: true, category: "sides" },
-  { name: 'Orden de papas gajo 🍟', price: 1800, img: ImgFriesWedges, quantity: 1, available: true, category: "sides" },
-  { name: 'Veggie', price: 6500, img: ImgVeggie, quantity: 1, available: true, category: "dish" },
-  { name: 'Coca Cola Regular 600ml', price: 1000, img: ImgCoca, quantity: 1, available: true, category: "beverage" },
-  { name: 'Coca Cola (sin azúcar) 600ml', price: 1000, img: ImgCocaSinAzucar, quantity: 1, available: true, category: "beverage" },
-  { name: 'Tropical Melocotón 600ml', price: 1000, img: ImgTropical, quantity: 1, available: true, category: "beverage" },
-  { name: 'H2O 600ml', price: 1000, img: ImgHtwoO, quantity: 1, available: true, category: 'beverage' },
+  { name: 'Special Taste', description: "Torta angus 1/4 de libra, tomate, cebolla morada, queso mozzarella, guacamole especial, papas gajo, aderezo chipotle.", price: 5800, img: ImgSpecial, quantity: 1, available: true, category: 'dish' },
+  { name: 'Chicago', description: "Pechuga de pollo, queso mozarella, tomate, lechuga, pepinillos, cebolla caramelizada, salsa ranch, papas gajo, aderezo chipotle.", price: 5800, img: ImgChicago, quantity: 1, available: true, category: 'dish' },
+  { name: 'Pulled Pork', description: "Carne mechada de cerdo, en salsa barbacoa, queso mozarella, cebolla caramelizada, salsa ranch., papas gajo, aderezo chipotle.", price: 5800, img: ImgPulledPork, quantity: 1, available: true, category: "dish" },
+  { name: 'Big One', description: "Torta angus 1/4 de libra, queso amarillo, tomate, cebolla morada, papas gajo.", price: 5800, img: ImgBigOne, quantity: 1, available: true, category: "dish" },
+  { name: 'New York', description: "Torta de carne, queso mozarella, tomate, lechuga, pepinillo, cebolla caramelizada, salsa ranch, papas gajo, aderezo chipotle.", price: 5000, img: ImgNewYork, quantity: 1, available: true, category: "dish" },
+  { name: 'Italiana',  description: "Pechuga de pollo, queso mozarella, tomate hojas de albahaca, salsa prego, pesto, salsa ranch, papas gajo, aderezo chipotle.", price: 5800, img: ImgItaliana, quantity: 1, available: true, category: "dish" },
+  { name: 'Mexicana',  description: "Torta de res, cebolla, queso mozarella, tomate, lechuga,chile jalapeno, papas gajo, aderezo chipotle.", price: 5800, img: ImgMexicana, quantity: 1, available: true, category: "dish" },
+  { name: 'Sweet Explosion',  description: "Torta angus 1/4 de libra, cebolla caramelizada, tomate, queso mozzarella, salsa BBQ, papas gajo, aderezo chipotle.", price: 5800, img: ImgSweet, quantity: 1, available: true, category: "dish" },
+  { name: 'Papas regulares 🍟', description: null, price: 1800, img: ImgFriesRectangle, quantity: 1, available: true, category: "sides" },
+  { name: 'Papas gajo 🍟', description: null, price: 1800, img: ImgFriesWedges, quantity: 1, available: true, category: "sides" },
+  { name: 'Veggie',  description: "Pan twings, torta de falafel, hongos, tomate, zucchini, aguacate, cebolla morada, salsa mostaza miel, papas gajo, aderezo chipotle.", price: 6500, img: ImgVeggie, quantity: 1, available: true, category: "dish" },
+  { name: 'Coca Cola Regular 600ml', description: null, price: 1000, img: ImgCoca, quantity: 1, available: true, category: "beverage" },
+  { name: 'Coca Cola (sin azúcar) 600ml', description: null, price: 1000, img: ImgCocaSinAzucar, quantity: 1, available: true, category: "beverage" },
+  { name: 'Tropical Melocotón 600ml', description: null, price: 1000, img: ImgTropical, quantity: 1, available: true, category: "beverage" },
+  { name: 'H2O 600ml', description: null, price: 1000, img: ImgHtwoO, quantity: 1, available: true, category: 'beverage' },
 ];
 
 export default function Menu() {
@@ -143,31 +144,36 @@ export default function Menu() {
           </Typography>
           <Divider/>
           <Typography variant="h5" align="center" color="text.secondary" paragraph
-            sx={{ fontSize: { lg: '1.3em', xs: '0.8em' }, paddingLeft: 6, paddingRight: 6, pt: {lg:4, xs:2}, pb: {lg:0, xs:3} }}>
+            sx={{ fontSize: { lg: '1.3em', xs: '0.8em' }, paddingLeft: 6, paddingRight: 6, pt: {lg:4, xs:2}, pb: {lg:0, xs:0} }}>
             Elige tus hamburguesas favoritas, selecciona la cantidad y haz clic en el botón 'Agregar al carrito' para realizar tu pedido en línea.<br/> Todas las hamburguesas incluyen una orden de papas gajo 🍟 
           </Typography>
+          {isMobile ? (
+            <Typography align="center" color="text.secondary" paragraph
+            sx={{ fontSize: { lg: '1.3em', xs: '0.8em' }, fontWeight: "bold", paddingLeft: 6, paddingRight: 6, pt: {lg:1, xs:2}, pb: {lg:0, xs:3} }}>
+              * Mantén presionada las imágenes para ver los ingredientes de cada platillo.
+            </Typography>
+          ) : "" }
         </Container>
 
-        <Container sx={{ py: 8 }} maxWidth="lg">
+        <Container sx={{ py: 2 }} maxWidth="lg">
           <Grid sx={{margin: '0 auto'}} container spacing={4}>
             {randomBurgerData.map((burger, index) => (
               <Grid item key={index} xs={12} sm={6} md={4}>
                 <Card
                   sx={{ height: '100%', width:'85%', display: 'flex', flexDirection: 'column' }}
                 >
-                  <CardMedia
-                    component="div"
-                    sx={{
-                      pt: '95%',
-                    }}
-                    image={burger.img}
-                  />
+                  <Tooltip title={burger.description} arrow placement="bottom">
+                    <CardMedia
+                      component="div"
+                      sx={{
+                        pt: '95%',
+                      }}
+                      image={burger.img}
+                    />
+                  </Tooltip>
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography gutterBottom variant="h5" component="h2">
-                      {burger.name}
-                    </Typography>
-                    <Typography>
-                      Precio: ₡{burger.price}
+                      {burger.name} | ₡{burger.price}
                     </Typography>
                     <TextField
                       disabled={!burger.available}
