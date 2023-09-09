@@ -4,6 +4,11 @@ import './index.css';
 import { isMobile } from 'react-device-detect';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+
+
 
 interface CartItem {
   name: string;
@@ -25,15 +30,20 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, cartItems }) => 
   const [customerName, setCustomerName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [toggleReload, setToggleReload] = useState(false);
 
   useEffect(() => {
+    recalculateTotal();
+    setShowConfirmation(false);
+  }, [cartItems]);
+
+  const recalculateTotal = () => {
     let total = 0;
     cartItems.forEach(item => {
       total += item.price * item.quantity; // Calculate total price with quantity
     });
     setCartTotal(total);
-    setShowConfirmation(false);
-  }, [cartItems]);
+  }
 
   const handleConfirmCheckout = () => {
     if (cartItems.length > 0) {
@@ -44,6 +54,25 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, cartItems }) => 
       });
     }
   };
+
+
+  const plusOneCartItem = ( pIndex2Delete: number ) => {
+    if( cartItems[pIndex2Delete] ){
+      cartItems[pIndex2Delete].quantity++
+    }
+    recalculateTotal();
+    setToggleReload(!toggleReload);
+  }
+
+  const deleteCartItem = ( pIndex2Delete: number ) => {
+    if( cartItems[pIndex2Delete].quantity > 1 ){
+      cartItems[pIndex2Delete].quantity--;
+    } else{
+      cartItems = cartItems.splice(pIndex2Delete, 1);
+    }
+    recalculateTotal();
+    setToggleReload(!toggleReload);
+  }
 
   const handleConfirmOrder = () => {
     sendMessage();
@@ -150,6 +179,20 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, cartItems }) => 
                         primary={`${item.name} x${item.quantity}`} // Display the quantity
                         secondary={`₡${item.price}`}
                       />
+                      <IconButton
+                        aria-label="Plus One"
+                        color="primary"
+                        onClick={() => plusOneCartItem( index )}
+                      >
+                        <AddIcon />
+                      </IconButton>
+                      <IconButton
+                        aria-label="Delete"
+                        color="primary"
+                        onClick={() => deleteCartItem( index )}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
                     </ListItem>
                   ))}
                 </List>
