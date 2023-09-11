@@ -18,6 +18,7 @@ import TextField from '@mui/material/TextField';
 import './index.css';
 import { isMobile } from 'react-device-detect';
 import { Divider } from '@mui/material';
+import { Modal, Checkbox } from '@mui/material';
 import { burgerData } from './data';
 
 const defaultTheme = createTheme();
@@ -77,21 +78,99 @@ export default function Menu() {
     handleCartToggle();
   };
 
+  // BUY AN ITEM WITH EXTRA OPTIONS
   const handleEmptyCart = () => {
     setCartItems([]);
   };
+
+  const [carItems, setCarItems] = useState([]);
+
+  const addItemToCar = (item: any) => {
+    const items: any = [
+      ...carItems,
+      {
+        ...item,
+      },
+    ];
+    setCarItems(items);
+  };
+
+  const calculateTotalCost = () => {
+    let total = 0;
+    carItems.forEach((element: any) => {
+      total += element.price;
+      if (element.extras.length > 0) {
+        element.extras.forEach((extra: any) => {
+          total += extra.price;
+        });
+      }
+    });
+
+    return total;
+  };
+
+  const handleOptionChange = (option: any, idx: number) => {
+    const clone: any = [...carItems];
+
+    clone[idx].extras.push({ item: option, price: 300 });
+
+    setCarItems(clone);
+
+    console.log(carItems);
+  };
+
+  // BUY AN ITEM WITH EXTRA OPTIONS
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <Header />
-      <CartModal
+
+      <Button onClick={() => setIsCartOpen(true)}>Open modal</Button>
+      <Modal
+        open={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        aria-labelledby="parent-modal-title"
+        aria-describedby="parent-modal-description"
+      >
+        <Box sx={{ width: 400, background: 'white' }}>
+          <h2>Total Cost: ${calculateTotalCost().toFixed(2)}</h2>
+          {carItems.map((carItem: any, index) => (
+            <div key={index} className="car-item">
+              <span>
+                {carItem.name} <b>{carItem.price}</b>
+              </span>
+              <br />
+              <span>Onions</span>
+              <Checkbox
+                value={'Onions'}
+                disabled={false}
+                checked={true}
+                onClick={() => {
+                  handleOptionChange('onions', index);
+                }}
+              />
+
+              <span>Extra sauce</span>
+              <Checkbox
+                value={'Extra sauce'}
+                disabled={false}
+                checked={true}
+                onClick={() => {
+                  handleOptionChange('extra-sauce', index);
+                }}
+              />
+            </div>
+          ))}
+        </Box>
+      </Modal>
+
+      {/* <CartModal
         isOpen={isCartOpen}
         onEmptyCart={handleEmptyCart}
         onClose={handleCartToggle}
         cartItems={cartItems}
-      />
-
+      /> */}
       <main>
         <Container
           maxWidth="xl"
@@ -179,7 +258,7 @@ export default function Menu() {
                       <Button
                         variant="contained"
                         fullWidth
-                        onClick={() => addToCart(burger, index)}
+                        onClick={() => addItemToCar(burger)}
                       >
                         Agregar al carrito
                       </Button>
@@ -198,7 +277,6 @@ export default function Menu() {
               </Grid>
             ))}
           </Grid>
-          <button onClick={() => handleCartToggle()}>asdasd</button>
         </Container>
       </main>
       <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
