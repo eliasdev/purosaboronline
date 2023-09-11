@@ -68,7 +68,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, cartItems }) => 
     if( cartItems[pIndex2Delete].quantity > 1 ){
       cartItems[pIndex2Delete].quantity--;
     } else{
-      cartItems = cartItems.splice(pIndex2Delete, 1);
+      cartItems.splice(pIndex2Delete, 1);
     }
     recalculateTotal();
     setToggleReload(!toggleReload);
