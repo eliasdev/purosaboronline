@@ -35,6 +35,8 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Divider, Modal, Checkbox, Backdrop, List,  ListItem,  ListItemText,  Paper, TextField } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 // TODO remove, this demo shouldn't need to reset the theme.
@@ -64,9 +66,10 @@ export default function Menu() {
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartTotalCost, setCartTotalCost] = useState(0);
-
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [refreshData, setRefreshData] = useState(false);
-
+  const [customerName, setCustomerName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
 
   const handleExtraChange = (pItemIndex: number, pExtraIndex: number) => {
     const updatedCartItems = JSON.parse(JSON.stringify(cartItems)); // Create a deep copy of cartItems
@@ -159,24 +162,61 @@ export default function Menu() {
   const addToCart = (item: CartItem) => {
     const existingItemIndex = cartItems.findIndex((cartItem) => cartItem.name === item.name);
   
-    if (existingItemIndex !== -1) {
+    /*if (existingItemIndex !== -1) {
       // Item already exists, increase its quantity
       const updatedCartItems = [...cartItems];
       updatedCartItems[existingItemIndex].quantity += 1;
       setCartItems(updatedCartItems);
     } else {
       // Item doesn't exist, add it to the cart
-      setCartItems((prevCartItems) => [...prevCartItems, item]);
-    }
-  
+     */setCartItems((prevCartItems) => [...prevCartItems, item]);
+    /*}*/
+    setRefreshData(!refreshData);
+    setShowConfirmation(false);
     handleCartToggle();
   };
 
-
-
   const removeFromCart = (pIndex: number) => {
-    cartItems.splice(pIndex, 1);
+    // Decrease quantity down to one
+    cartItems.splice(pIndex,1);
+    setRefreshData(!refreshData);
+};
+
+
+  const handleConfirmCheckout = () => {
+    if (cartItems.length > 0) {
+      setShowConfirmation(true);
+    } else {
+      toast.error('🍔🍔 Debes agregar productos a la orden, Patricio!', {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
   };
+
+  const handleConfirmOrder = () => {
+    sendMessage();
+  };
+
+  const sendMessage = () => {
+    if (customerName && phoneNumber) {
+        const formattedOrderText = `Cliente: ${customerName} %0aNúmero de teléfono: ${phoneNumber}%0a%0aConfirmación de la orden:%0a%0a${cartItems
+            .map((item) => {
+                const selectedExtras = item.extras
+                    .filter((extra:any) => extra.selected) // Filter selected extras
+                    .map((extra:any) => `${extra.name} ₡${extra.price} = ₡${item.price}`)
+                    .join(', ');
+                return `${item.name} x${item.quantity} - ₡${item.basePrice}${selectedExtras ? ' (Extras: ' + selectedExtras + ')' : ''}`;
+            })
+            .join('%0a')}%0a%0aTotal: ₡${cartTotalCost.toFixed(0)} colones%0a%0a*NO OLVIDES ENVIAR ESTE MENSAJE*`;
+
+        window.open('https://wa.me/50685194028?text=' + formattedOrderText, '_blank');
+    } else {
+        toast.error('Ingresa tu información personal para completar tu orden.', {
+            position: toast.POSITION.TOP_CENTER,
+        });
+    }
+};
+
   
 
   return (
@@ -198,77 +238,193 @@ export default function Menu() {
               className="modal-content"
               style={{ width: isMobile ? '90%' : '60%' }}
             >
+              {showConfirmation ? (
               
-              <Box>
-
-                <h2>Carrito de Compras</h2>
-                
-
-
+              <div>
+                <Typography
+                  sx={{ fontSize: { xs: '1em', lg: '2em' } }}
+                  variant="h5"
+                  gutterBottom
+                >
+                  Confirma tu orden en Puro Sabor ✅
+                </Typography>
                 <Paper style={{ maxHeight: '300px', overflowY: 'auto' }}>
                   <List>
-                    {cartItems.map((item: any, index) => (
-                      <ListItem key={index}>
-                        <Grid container spacing={2}>
-                          <Grid
-                            item
-                            xs={12}
-                            lg={item.category == 'dish' ? 1.7 : 11}
-                          >
-                            <ListItemText
-                              primary={`${item.name} x${item.quantity}`}
-                              secondary={`₡${item.price}`}
-                            />
-                          </Grid>
-                          <Grid
-                            sx={{
-                              display: item.category == 'dish' ? '' : 'none',
-                            }}
-                            item
-                            xs={12}
-                            lg={9}
-                          >
-                            
-                            
-                            <Grid container spacing={1}>
-
-                              {item.extras.map((extraIngred: any, extra_index: number) => (
-                                <Grid item xs={12} lg={extraIngred.name.length / item.extras.length} key={extra_index}>
-                                  <span>{extraIngred.name} | ₡{extraIngred.price}</span>
-                                  <Checkbox
-                                    value={extraIngred.name}
-                                    disabled={false}
-                                    onChange={() => {
-                                      handleExtraChange(index, extra_index);
-                                    }}
-                                  />
-                                </Grid>
-                              ))}
+                    {cartItems.map((item, index) => (
+                      <ListItem style={{ height: 'auto' }} key={index}>
+                        <ListItemText
+                          disableTypography
+                          primary={
+                            <div style={{ fontSize: 15 }}>
+                              <span>{`${item.name} x${item.quantity} = ₡${item.basePrice}`} ( <b>Extras</b>:  {item.extras
+                                      .filter((extra: any ) => extra.selected)
+                                      .map((extra:any) => `${extra.name} ₡${extra.price}`)
+                                      .join(', ')} ) {item.category === 'dish' ? '🍔' : item.category === 'beverage' ? '🥤' : ''}  | ₡{item.price}</span>
                               
                               
-                            </Grid>
-                          </Grid>
-                          <Grid item xs={12} lg={1}>
-                            <IconButton
-                              color="secondary"
-                              aria-label="Delete"
-                              onClick={() => removeFromCart(index)}
-                            >
-                              {isMobile ? 'Eliminar' : ''} <DeleteIcon />
-                            </IconButton>
-                          </Grid>
-                        </Grid>
+                            </div>
+                          }
+                        />
                       </ListItem>
                     ))}
                   </List>
                 </Paper>
 
+                <Typography
+                  fontSize="1.5em"
+                  variant="subtitle1"
+                  gutterBottom
+                  paddingTop={2}
+                  fontWeight="bold"
+                >
+                  Total: ₡{cartTotalCost.toFixed(0)} colones
+                </Typography>
+                <TextField
+                  label="Ingresa tu nombre completo"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label="Ingresa acá tu número de teléfono"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  fullWidth
+                  margin="normal"
+                  sx={{ pb: 2 }}
+                />
+                <div className="button-group">
+                  <Button
+                    sx={{ mr: '10px', width: { lg: '37%', xs: '33%' } }}
+                    variant="contained"
+                    color="primary"
+                    onClick={handleCartToggle}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleConfirmOrder}
+                    sx={{ width: { lg: '59%', xs: '62%' } }}
+                  >
+                    Ordenar ahora! 🍔
+                  </Button>
+                </div>
+              </div>
+              
+              ) : (
 
-                <h2>Costo Total: ₡{cartTotalCost.toFixed(2)}</h2>
+                <Box>
+
+                  <Typography
+                    variant="h4"
+                    gutterBottom
+                    paddingTop={2}
+                    paddingBottom={2}
+                    fontWeight="bold"
+                  >
+                    Carrito de Compras 🛒
+                  </Typography>
+                  
 
 
+                  <Paper style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                    <List>
+                      {cartItems.map((item: any, index) => (
+                        <ListItem key={index}>
+                          <Grid container spacing={2}>
+                            <Grid
+                              item
+                              xs={12}
+                              lg={item.category == 'dish' ? 1.7 : 11}
+                            >
+                              <ListItemText
+                                primary={`${item.name} x${item.quantity}`}
+                                secondary={`₡${item.price}`}
+                              />
+                            </Grid>
+                            <Grid
+                              sx={{
+                                display: item.category == 'dish' ? '' : 'none',
+                              }}
+                              item
+                              xs={12}
+                              lg={9}
+                            >
+                              
+                              
+                              <Grid container spacing={1}>
+
+                                {item.extras.map((extraIngred: any, extra_index: number) => (
+                                  <Grid item xs={12} lg={extraIngred.name.length / item.extras.length} key={extra_index}>
+                                    <span>{extraIngred.name} | ₡{extraIngred.price}</span>
+                                    <Checkbox
+                                      value={extraIngred.name}
+                                      disabled={false}
+                                      checked={extraIngred.selected}
+                                      onChange={() => {
+                                        handleExtraChange(index, extra_index);
+                                      }}
+                                    />
+                                  </Grid>
+                                ))}
+                                
+                                
+                              </Grid>
+                            </Grid>
+                            <Grid item xs={12} lg={1}>
+                              <IconButton
+                                color="secondary"
+                                aria-label="Delete"
+                                onClick={() => removeFromCart(index)}
+                              >
+                                {isMobile ? 'Eliminar' : ''} <DeleteIcon />
+                              </IconButton>
+                            </Grid>
+                          </Grid>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Paper>
+
+
+                  <Typography
+                    variant="h5"
+                    gutterBottom
+                    paddingTop={2}
+                    paddingBottom={2}
+                    fontWeight="bold"
+                  >
+                    Total: ₡{cartTotalCost.toFixed(0)} colones
+                  </Typography>
+                  <div className="button-group">
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleCartToggle}
+                      sx={{ mr: '10px', width: '43%' }}
+                    >
+                      Volver al Menú
+                    </Button>
+                    <Button
+                      sx={{ width: '52%' }}
+                      variant="contained"
+                      color="primary"
+                      onClick={handleConfirmCheckout}
+                    >
+                      Completar Orden ✅
+                    </Button>
+                  </div>
+
+
+                  
+                </Box>
                 
-              </Box>
+              ) }
+              
+              
             </div>
           </div>
         </div>
