@@ -453,15 +453,15 @@ export default function Menu() {
           </Typography>
           <Divider/>
           <Typography variant="h5" align="center" color="text.secondary" paragraph
-            sx={{ fontSize: { lg: '1.3em', xs: '0.8em' }, paddingLeft: 6, paddingRight: 6, pt: {lg:4, xs:2}, pb: {lg:0, xs:0} }}>
+            sx={{ fontSize: { lg: '1.3em', xs: '0.8em' }, paddingLeft: 6, paddingRight: 6, pt: {lg:4, xs:2}, pb: {lg:0, xs:3} }}>
             Elige tus hamburguesas favoritas, selecciona la cantidad y haz clic en el botón 'Agregar al carrito' para realizar tu pedido en línea.<br/> Todas las hamburguesas incluyen una orden de papas gajo 🍟 
           </Typography>
-          {isMobile ? (
+          {/*isMobile ? (
             <Typography align="center" color="text.secondary" paragraph
             sx={{ fontSize: { lg: '1.3em', xs: '0.8em' }, fontWeight: "bold", paddingLeft: 6, paddingRight: 6, pt: {lg:1, xs:2}, pb: {lg:0, xs:3} }}>
               * Mantén presionada las imágenes para ver los ingredientes de cada platillo.
             </Typography>
-          ) : "" }
+          ) : "" */}
         </Container>
 
         <Container sx={{ py: 2 }} maxWidth="lg">
@@ -471,15 +471,13 @@ export default function Menu() {
                 <Card
                   sx={{ height: '100%', width:'85%', display: 'flex', flexDirection: 'column' }}
                 >
-                  <Tooltip title={burger.description} arrow placement="bottom">
-                    <CardMedia
+                  <CardMedia
                       component="div"
                       sx={{
                         pt: '95%',
                       }}
                       image={burger.img}
-                    />
-                  </Tooltip>
+                  />
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography gutterBottom variant="h5" component="h2">
                       {burger.name} | ₡{burger.price}
