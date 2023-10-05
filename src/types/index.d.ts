@@ -2,6 +2,7 @@
 export interface CartItem {
     name: string;
     price: number;
+    basePrice: number;
     quantity: number;
     img: string;
     available: boolean;
@@ -10,4 +11,5 @@ export interface CartItem {
     ingreds: Array;
     extras: Array;
   }
+  
   
