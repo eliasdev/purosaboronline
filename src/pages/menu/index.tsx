@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -12,10 +12,9 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Footer from '../../modules/sections/footer';
 import Header from '../../modules/sections/header';
-import CartModal from '../../modules/components/cartModal';
 import { CartItem } from '../../types/index'; // Import the CartItem type
-import TextField from '@mui/material/TextField';
 import "./index.css";
+import "../../modules/components/cartModal/index.css";
 import ImgBigOne from '../../assets/menu/bigone.png';
 import ImgChicago from '../../assets/menu/chicago.png';
 import ImgPulledPork from '../../assets/menu/pulled.png';
@@ -32,31 +31,84 @@ import ImgHtwoO from '../../assets/menu/h2o.png';
 import ImgFriesRectangle from '../../assets/menu/papas_rectangulo.png';
 import ImgFriesWedges from '../../assets/menu/papas_gajo.png';
 import { isMobile } from 'react-device-detect';
-import { Divider } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Divider, Modal, Checkbox, Backdrop, List,  ListItem,  ListItemText,  Paper, TextField } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 
 
 // TODO remove, this demo shouldn't need to reset the theme.
+const extraIngredients = [{name:"doble queso", price: 200}, {name:"doble torta", price: 1000}, {name:"tocineta", price: 500}, {name:"extra pepinillos", price: 300}];
 const defaultTheme = createTheme();
 const burgerData: CartItem[] = [
-  { name: 'Special Taste', description: "Torta angus 1/4 de libra, tomate, cebolla morada, queso mozzarella, guacamole especial, papas gajo, aderezo chipotle.", price: 5800, img: ImgSpecial, quantity: 1, available: true, category: 'dish' },
-  { name: 'Chicago', description: "Pechuga de pollo, queso mozarella, tomate, lechuga, pepinillos, cebolla caramelizada, salsa ranch, papas gajo, aderezo chipotle.", price: 5800, img: ImgChicago, quantity: 1, available: true, category: 'dish' },
-  { name: 'Pulled Pork', description: "Carne mechada de cerdo, en salsa barbacoa, queso mozarella, cebolla caramelizada, salsa ranch., papas gajo, aderezo chipotle.", price: 5800, img: ImgPulledPork, quantity: 1, available: true, category: "dish" },
-  { name: 'Big One', description: "Torta angus 1/4 de libra, queso amarillo, tomate, cebolla morada, papas gajo.", price: 5800, img: ImgBigOne, quantity: 1, available: true, category: "dish" },
-  { name: 'New York', description: "Torta de carne, queso mozarella, tomate, lechuga, pepinillo, cebolla caramelizada, salsa ranch, papas gajo, aderezo chipotle.", price: 5000, img: ImgNewYork, quantity: 1, available: true, category: "dish" },
-  { name: 'Italiana',  description: "Pechuga de pollo, queso mozarella, tomate hojas de albahaca, salsa prego, pesto, salsa ranch, papas gajo, aderezo chipotle.", price: 5800, img: ImgItaliana, quantity: 1, available: true, category: "dish" },
-  { name: 'Mexicana',  description: "Torta de res, cebolla, queso mozarella, tomate, lechuga,chile jalapeno, papas gajo, aderezo chipotle.", price: 5800, img: ImgMexicana, quantity: 1, available: true, category: "dish" },
-  { name: 'Sweet Explosion',  description: "Torta angus 1/4 de libra, cebolla caramelizada, tomate, queso mozzarella, salsa BBQ, papas gajo, aderezo chipotle.", price: 5800, img: ImgSweet, quantity: 1, available: true, category: "dish" },
-  { name: 'Papas regulares 🍟', description: null, price: 1800, img: ImgFriesRectangle, quantity: 1, available: true, category: "sides" },
-  { name: 'Papas gajo 🍟', description: null, price: 1800, img: ImgFriesWedges, quantity: 1, available: true, category: "sides" },
-  { name: 'Veggie',  description: "Pan twings, torta de falafel, hongos, tomate, zucchini, aguacate, cebolla morada, salsa mostaza miel, papas gajo, aderezo chipotle.", price: 6500, img: ImgVeggie, quantity: 1, available: true, category: "dish" },
-  { name: 'Coca Cola Regular 600ml', description: null, price: 1000, img: ImgCoca, quantity: 1, available: true, category: "beverage" },
-  { name: 'Coca Cola (sin azúcar) 600ml', description: null, price: 1000, img: ImgCocaSinAzucar, quantity: 1, available: true, category: "beverage" },
-  { name: 'Tropical Melocotón 600ml', description: null, price: 1000, img: ImgTropical, quantity: 1, available: true, category: "beverage" },
-  { name: 'H2O 600ml', description: null, price: 1000, img: ImgHtwoO, quantity: 1, available: true, category: 'beverage' },
+  { name: 'Special Taste', description: "Torta angus 1/4 de libra, tomate, cebolla morada, queso mozzarella, guacamole especial, papas gajo, aderezo chipotle.", price: 5800, img: ImgSpecial, quantity: 1, available: true, category: 'dish', ingreds: ["tomate","cebolla","queso","guacamole"], extras: extraIngredients },
+  { name: 'Chicago', description: "Pechuga de pollo, queso mozarella, tomate, lechuga, pepinillos, cebolla caramelizada, salsa ranch, papas gajo, aderezo chipotle.", price: 5800, img: ImgChicago, quantity: 1, available: true, category: 'dish', ingreds: ["queso", "tomate", "pepinillos", "cebolla"], extras: extraIngredients },
+  { name: 'Pulled Pork', description: "Carne mechada de cerdo en salsa barbacoa, tomate, queso mozarella, cebolla caramelizada, salsa ranch, papas gajo, aderezo chipotle.", price: 5800, img: ImgPulledPork, quantity: 1, available: true, category: "dish", ingreds: ["queso", "tomate", "cebolla"], extras: extraIngredients },
+  { name: 'Big One', description: "Torta angus 1/4 de libra, queso amarillo, tomate, cebolla morada, papas gajo.", price: 5800, img: ImgBigOne, quantity: 1, available: true, category: "dish", ingreds: ["queso", "tomate", "cebolla"], extras: extraIngredients },
+  { name: 'New York', description: "Torta de carne, queso mozarella, tomate, lechuga, pepinillo, cebolla caramelizada, salsa ranch, papas gajo, aderezo chipotle.", price: 5000, img: ImgNewYork, quantity: 1, available: true, category: "dish", ingreds: ["queso", "tomate", "lechuga", "pepinillo", "cebolla"], extras: extraIngredients },
+  { name: 'Italiana',  description: "Pechuga de pollo, queso mozarella, tomate hojas de albahaca, salsa prego, pesto, salsa ranch, papas gajo, aderezo chipotle.", price: 5800, img: ImgItaliana, quantity: 1, available: true, category: "dish", ingreds: ["queso", "tomate", "albahaca", "pesto"], extras: extraIngredients },
+  { name: 'Mexicana',  description: "Torta de res, cebolla caramelizada, queso mozarella, tomate, lechuga, chile jalapeño, papas gajo, aderezo chipotle.", price: 5800, img: ImgMexicana, quantity: 1, available: true, category: "dish", ingreds: ["cebolla", "queso", "tomate", "lechuga", "chile"], extras: extraIngredients },
+  { name: 'Sweet Explosion',  description: "Torta angus 1/4 de libra, cebolla caramelizada, tomate, queso mozzarella, salsa BBQ, papas gajo, aderezo chipotle.", price: 5800, img: ImgSweet, quantity: 1, available: true, category: "dish", ingreds: ["cebolla", "tomate", "queso"], extras: extraIngredients },
+  { name: 'Papas regulares 🍟', description: null, price: 1800, img: ImgFriesRectangle, quantity: 1, available: true, category: "sides", ingreds: [], extras:[] },
+  { name: 'Papas gajo 🍟', description: null, price: 1800, img: ImgFriesWedges, quantity: 1, available: true, category: "sides", ingreds: [], extras:[] },
+  { name: 'Veggie',  description: "Pan twings, torta de falafel, hongos, tomate, zucchini, aguacate, cebolla morada, salsa mostaza miel, papas gajo, aderezo chipotle.", price: 6500, img: ImgVeggie, quantity: 1, available: true, category: "dish", ingreds: ["hongos", "tomate", "zucchini", "aguacate", "cebolla"], extras: extraIngredients },
+  { name: 'Coca Cola Regular 600ml', description: null, price: 1000, img: ImgCoca, quantity: 1, available: true, category: "beverage", ingreds: [], extras:[] },
+  { name: 'Coca Cola (sin azúcar) 600ml', description: null, price: 1000, img: ImgCocaSinAzucar, quantity: 1, available: true, category: "beverage", ingreds: [], extras:[] },
+  { name: 'Tropical Melocotón 600ml', description: null, price: 1000, img: ImgTropical, quantity: 1, available: true, category: "beverage", ingreds: [], extras:[] },
+  { name: 'H2O 600ml', description: null, price: 1000, img: ImgHtwoO, quantity: 1, available: true, category: 'beverage', ingreds: [], extras:[] },
 ];
 
+
+
 export default function Menu() {
+
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartTotalCost, setCartTotalCost] = useState(0);
+
+  const [refreshData, setRefreshData] = useState(false);
+
+
+  const handleExtraChange = (pItemIndex: number, pExtraIndex: number) => {
+    const clone = [...cartItems];
+    cartItems[pItemIndex].price = burgerData[pItemIndex].price;
+    cartItems[pItemIndex].extras[pExtraIndex].selected = !cartItems[pItemIndex].extras[pExtraIndex].selected;
+    setRefreshData(!refreshData);
+    //setCartItems(clone);
+  };
+  
+  useEffect(() => {
+    let total = 0;
+  
+    cartItems.forEach((element) => {
+      let itemPrice = element.price; // Initialize item price with base price without extras
+      
+      if (element.extras && element.extras.length > 0) {
+        element.extras.forEach((extra:any, extraIndex: number) => {
+          console.log("extraIndex", extraIndex);
+          if (extra?.selected !== undefined && extra?.selected !== null && ( extra.selected == true ) ) {
+            // Add extra price to item price only if the checkbox is checked
+            console.log("add");
+            itemPrice += extra.price;
+            element.price = itemPrice;
+          } else if( ( typeof extra?.selected == "boolean" ) && ( extra?.selected == false ) ){
+            console.log("substract");
+            //itemPrice -= extra.price;
+            //element.price = itemPrice;
+          }
+        });
+      }
+
+      total += element.price;
+      
+      
+    });
+  
+    // Update cartTotalCost state
+    setCartTotalCost(total);
+  }, [cartItems, refreshData]);
+  
+  
+
 
   const shuffleArray = (array: any[]) => {
     // Group items by category
@@ -87,7 +139,7 @@ export default function Menu() {
   
   
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
   const [randomBurgerData, setRandomBurgerData] = useState<CartItem[]>(shuffleArray(
     burgerData.map(item => ({ ...item, quantity: 1 }))));
 
@@ -110,17 +162,107 @@ export default function Menu() {
   
     handleCartToggle();
   };
-  
 
-  const handleEmptyCart = () => {
-    setCartItems([]);
+
+
+  const removeFromCart = (pIndex: number) => {
+    cartItems.splice(pIndex, 1);
   };
+  
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <Header />
-      <CartModal isOpen={isCartOpen} onClose={handleCartToggle} cartItems={cartItems} />
+      
+      
+      <Modal
+        open={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        aria-labelledby="parent-modal-title"
+        aria-describedby="parent-modal-description"
+      >
+        <div>
+          <Backdrop open={isCartOpen} onClick={() => setIsCartOpen(false)} style={{ zIndex: 9999 }} />
+          <div className="modal-overlay">
+            <div
+              className="modal-content"
+              style={{ width: isMobile ? '90%' : '60%' }}
+            >
+              
+              <Box>
+                Carrito de Compras
+
+
+                <Paper style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                  <List>
+                    {cartItems.map((item: any, index) => (
+                      <ListItem key={index}>
+                        <Grid container spacing={2} alignItems="center">
+                          <Grid
+                            item
+                            xs={12}
+                            lg={item.category == 'dish' ? 1.7 : 11}
+                          >
+                            <ListItemText
+                              primary={`${item.name} x${item.quantity}`}
+                              secondary={`₡${item.price}`}
+                            />
+                          </Grid>
+                          <Grid
+                            sx={{
+                              display: item.category == 'dish' ? '' : 'none',
+                            }}
+                            item
+                            xs={12}
+                            lg={9}
+                          >
+                            
+                            
+                            <Grid container spacing={1}>
+
+                              {item.extras.map((extraIngred: any, extra_index: number) => (
+                                <Grid item xs={12} lg={extraIngred.name.length / item.extras.length} key={extra_index}>
+                                  <span>{extraIngred.name} | ₡{extraIngred.price}</span>
+                                  <Checkbox
+                                    value={extraIngred.name}
+                                    disabled={false}
+                                    onChange={() => {
+                                      handleExtraChange(index, extra_index);
+                                    }}
+                                  />
+                                </Grid>
+                              ))}
+                              
+                              
+                            </Grid>
+                          </Grid>
+                          <Grid item xs={12} lg={1}>
+                            <IconButton
+                              color="secondary"
+                              aria-label="Delete"
+                              onClick={() => removeFromCart(index)}
+                            >
+                              {isMobile ? 'Eliminar' : ''} <DeleteIcon />
+                            </IconButton>
+                          </Grid>
+                        </Grid>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Paper>
+
+
+                <h2>Costo Total: ₡{cartTotalCost.toFixed(2)}</h2>
+
+
+                
+              </Box>
+            </div>
+          </div>
+        </div>
+      </Modal>
+
 
       <main>
       <Container
@@ -174,6 +316,9 @@ export default function Menu() {
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography gutterBottom variant="h5" component="h2">
                       {burger.name} | ₡{burger.price}
+                    </Typography>
+                    <Typography gutterBottom paragraph sx={{ fontSize:12 }}>
+                      {burger.description}
                     </Typography>
                     <TextField
                       disabled={!burger.available}

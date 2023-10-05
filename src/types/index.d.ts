@@ -7,5 +7,7 @@ export interface CartItem {
     available: boolean;
     category: string;
     description: string|null;
+    ingreds: Array;
+    extras: Array;
   }
   
