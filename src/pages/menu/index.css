@@ -4,7 +4,7 @@
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    height: 105vh;
     background-image: url('../../assets/3.png');
     background-repeat: repeat;
     z-index: -1; /* Place the background behind other content */

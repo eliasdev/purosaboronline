@@ -434,22 +434,22 @@ const updateSelectedCategory = ( pSelected: string) => {
         <Container sx={{ py: 4 }} maxWidth="lg">
           <Grid container textAlign={"center"}>
               <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={3}>
-                <Button sx={{width:"90%"}} variant="contained" size="large" onClick={() => updateSelectedCategory('burgers')}>
+                <Button sx={{backgroundColor:( selectedCategory === "burger"? "red" : "white"), color:( selectedCategory === "burger"? "white" : "black"), width:"90%"}} variant="contained" size="large" onClick={() => updateSelectedCategory('burger')}>
                   Hamburguesas
                 </Button>
               </Grid>
               <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={3}>
-                <Button sx={{width:"90%"}} variant="contained" size="large" onClick={() => updateSelectedCategory('wings')}>
+                <Button sx={{backgroundColor:( selectedCategory === "wings"? "red" : "white"), color:( selectedCategory === "wings"? "white" : "black"), width:"90%"}} variant="contained" size="large" onClick={() => updateSelectedCategory('wings')}>
                   Alitas
                 </Button>
               </Grid>
-              <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={3} onClick={() => updateSelectedCategory('combo')}>
-                <Button sx={{width:"90%"}} variant="contained" size="large">
+              <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={3}>
+                <Button sx={{backgroundColor:( selectedCategory === "combo"? "red" : "white"), color:( selectedCategory === "combo"? "white" : "black"), width:"90%"}} variant="contained" size="large" onClick={() => updateSelectedCategory('combo')}>
                   Combos
                 </Button>
               </Grid>
               <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={3}>
-                <Button sx={{width:"90%"}} variant="contained" size="large" onClick={() => updateSelectedCategory('beverage')}>
+                <Button sx={{backgroundColor:( selectedCategory === "beverage"? "red" : "white"), color:( selectedCategory === "beverage"? "white" : "black"), width:"90%"}} variant="contained" size="large" onClick={() => updateSelectedCategory('beverage')}>
                   Bebidas
                 </Button>
               </Grid>
@@ -510,7 +510,7 @@ const updateSelectedCategory = ( pSelected: string) => {
           </Grid>
         </Container>
       </main>
-      <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
+      <Box sx={{ bgcolor: 'background.paper', p: 6, my: 10, marginBottom: 0 }} component="footer">
         <Footer />
       </Box>
     </ThemeProvider>
