@@ -37,6 +37,7 @@ export default function Menu() {
   const [refreshData, setRefreshData] = useState(false);
   const [customerName, setCustomerName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('combo');
 
   const findMenuItemPrice = (itemName: string): number => {
     const menuItem = burgerData.find(item => item.name === itemName);
@@ -97,43 +98,17 @@ export default function Menu() {
   
 
 
-  const shuffleArray = (array: any[]) => {
-    // Group items by category
-    const groupedByCategory: { [key: string]: any[] } = {};
-    array.forEach((item) => {
-      const category = item.category || 'Uncategorized';
-      if (!groupedByCategory[category]) {
-        groupedByCategory[category] = [];
-      }
-      groupedByCategory[category].push(item);
-    });
-  
-    // Separate items with category "combo" from other categories
-    const comboItems = groupedByCategory['combo'] || [];
-    delete groupedByCategory['combo'];
-  
-    // Shuffle other categories individually
-    const shuffledArray: any[] = [];
-    Object.values(groupedByCategory).forEach((categoryItems) => {
-      for (let i = categoryItems.length - 1; i > 0; i--) {
+  const shuffleArray = (array: any[], selectedCategory: string) => {
+    // Separate items with the selected category from other categories
+    const selectedCategoryItems = array.filter(item => item.category === selectedCategory);
+    const otherCategoryItems = array.filter(item => item.category !== selectedCategory);
+    // Shuffle items with the selected category
+    for (let i = selectedCategoryItems.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [categoryItems[i], categoryItems[j]] = [
-          categoryItems[j],
-          categoryItems[i],
-        ];
-      }
-      shuffledArray.push(...categoryItems);
-    });
-  
-    // Shuffle items with category "combo"
-    for (let i = comboItems.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [comboItems[i], comboItems[j]] = [comboItems[j], comboItems[i]];
+        [selectedCategoryItems[i], selectedCategoryItems[j]] = [selectedCategoryItems[j], selectedCategoryItems[i]];
     }
-  
-    // Add items with category "combo" to the beginning of the shuffled array
-    shuffledArray.unshift(...comboItems);
-  
+    // Combine shuffled items with the selected category and non-selected items
+    const shuffledArray = [...selectedCategoryItems, ...otherCategoryItems];
     return shuffledArray;
   };
   
@@ -146,7 +121,7 @@ export default function Menu() {
   };
 
   const [randomBurgerData, setRandomBurgerData] = useState<CartItem[]>(shuffleArray(
-    burgerData.map(item => ({ ...item, quantity: 1 }))));
+    burgerData.map(item => ({ ...item, quantity: 1 })), selectedCategory));
 
   const handleCartToggle = () => {
     setIsCartOpen(!isCartOpen);
@@ -200,6 +175,12 @@ export default function Menu() {
         });
     }
 };
+ 
+const updateSelectedCategory = ( pSelected: string) => {
+  setSelectedCategory(pSelected);
+  setRandomBurgerData( shuffleArray(
+    burgerData.map(item => ({ ...item, quantity: 1 })), pSelected) );
+}
 
   
 
@@ -453,22 +434,22 @@ export default function Menu() {
         <Container sx={{ py: 4 }} maxWidth="lg">
           <Grid container textAlign={"center"}>
               <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={3}>
-                <Button sx={{width:"90%"}} variant="contained" size="large">
+                <Button sx={{width:"90%"}} variant="contained" size="large" onClick={() => updateSelectedCategory('burgers')}>
                   Hamburguesas
                 </Button>
               </Grid>
               <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={3}>
-                <Button sx={{width:"90%"}} variant="contained" size="large">
+                <Button sx={{width:"90%"}} variant="contained" size="large" onClick={() => updateSelectedCategory('wings')}>
                   Alitas
                 </Button>
               </Grid>
-              <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={3}>
+              <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={3} onClick={() => updateSelectedCategory('combo')}>
                 <Button sx={{width:"90%"}} variant="contained" size="large">
                   Combos
                 </Button>
               </Grid>
               <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={3}>
-                <Button sx={{width:"90%"}} variant="contained" size="large">
+                <Button sx={{width:"90%"}} variant="contained" size="large" onClick={() => updateSelectedCategory('beverage')}>
                   Bebidas
                 </Button>
               </Grid>
