@@ -15,14 +15,15 @@ import Header from '../../modules/sections/header';
 import { CartItem } from '../../types/index'; // Import the CartItem type
 import "./index.css";
 import "../../modules/components/cartModal/index.css";
-
+import ImgPromoGuy from '../../assets/promoguy1.webp';
+import ImgPromoGuyTwo from '../../assets/promoguy2.webp';
 import { isMobile } from 'react-device-detect';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Divider, Modal, Checkbox, Backdrop, List,  ListItem,  ListItemText,  Paper, TextField } from '@mui/material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { burgerData } from '../../modules/context/data';
+import { burgerData, promoCodeList } from '../../modules/context/data';
 
 
 // TODO remove, this demo shouldn't need to reset the theme.
@@ -33,10 +34,13 @@ export default function Menu() {
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartTotalCost, setCartTotalCost] = useState(0);
+  const [cartSubtotal, setCartSubtotal] = useState(0);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [refreshData, setRefreshData] = useState(false);
   const [customerName, setCustomerName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [promoCode, setPromoCode] = useState('');
+  const [showPromoCode, setShowPromoCode] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('combo');
 
   const findMenuItemPrice = (itemName: string): number => {
@@ -72,6 +76,8 @@ export default function Menu() {
   
   useEffect(() => {
     let total = 0;
+    let subtotal = 0;
+    
   
     cartItems.forEach((element) => {
       let itemPrice = element.basePrice; // Initialize item price with base price without extras
@@ -88,10 +94,22 @@ export default function Menu() {
         });
       }
       total += element.price;
+      subtotal += element.price;
     });
+
+    
+
+    if (promoCode) {
+      setPromoCode(promoCode.toLowerCase());
+      const promoCodeDiscount = promoCodeList.find((code) => code.key === promoCode);
+      if (promoCodeDiscount) {
+        total -= (total * promoCodeDiscount.discount) / 100;
+      }
+    }
     //console.log( cartItems );
   
     // Update cartTotalCost state
+    setCartSubtotal(subtotal);
     setCartTotalCost(total);
   }, [cartItems, refreshData]);
   
@@ -158,29 +176,62 @@ export default function Menu() {
 
   const sendMessage = () => {
     if (customerName && phoneNumber) {
-        const formattedOrderText = `Cliente: ${customerName} %0aNúmero de teléfono: ${phoneNumber}%0a%0aConfirmación de la orden:%0a%0a${cartItems
-            .map((item) => {
-                const selectedExtras = item.extras
-                    .filter((extra:any) => extra.selected) // Filter selected extras
-                    .map((extra:any) => `${extra.name} ₡${extra.price} = ₡${item.price}`)
-                    .join(', ');
-                return `${item.name} x${item.quantity} - ₡${item.basePrice}${selectedExtras ? ' (Extras: ' + selectedExtras + ')' : ''}`;
-            })
-            .join('%0a')}%0a%0aTotal: ₡${cartTotalCost.toFixed(0)} colones%0a%0a*NO OLVIDES ENVIAR ESTE MENSAJE*`;
-
-        window.open('https://wa.me/50685194028?text=' + formattedOrderText, '_blank');
+      let promoCodeMessage = "";
+      if (promoCode) {
+        const promoCodeDiscount = promoCodeList.find((code) => code.key === promoCode);
+        if (promoCodeDiscount) {
+          promoCodeMessage = `Descuento aplicado: ${promoCodeDiscount.discount}% %0a`;
+        }
+      }
+  
+      const formattedOrderText = `Cliente: ${customerName} %0aNúmero de teléfono: ${phoneNumber}%0a%0aConfirmación de la orden:%0a%0a${cartItems
+          .map((item) => {
+              const selectedExtras = item.extras
+                  .filter((extra:any) => extra.selected) // Filter selected extras
+                  .map((extra:any) => `${extra.name} ₡${extra.price} = ₡${item.price}`)
+                  .join(', ');
+              return `${item.name} x${item.quantity} - ₡${item.basePrice}${selectedExtras ? ' (Extras: ' + selectedExtras + ')' : ''}`;
+          })
+          .join('%0a')}%0a${promoCodeMessage}%0a%0aTotal: ₡${cartTotalCost.toFixed(0)} colones%0a%0a*NO OLVIDES ENVIAR ESTE MENSAJE*`;
+  
+      window.open('https://wa.me/50685194028?text=' + formattedOrderText, '_blank');
     } else {
-        toast.error('Ingresa tu información personal para completar la orden.', {
-            position: toast.POSITION.TOP_CENTER,
-        });
+      toast.error('Ingresa tu información personal para completar la orden.', {
+          position: toast.POSITION.TOP_CENTER,
+      });
     }
-};
+  };
+  
+
+const applyPromoCode = ( pPromoCode : string ) => {
+  pPromoCode = pPromoCode.toLowerCase();
+  const promoCodeItem = promoCodeList.find((item) => item.key === pPromoCode);
+  // If promoCodeItem is found, return the discount value, otherwise return null
+  if( promoCodeItem && promoCodeItem.discount > 0 ){
+    setShowPromoCode(!showPromoCode);
+    setPromoCode( pPromoCode );
+    
+    setRefreshData(!refreshData);
+    setIsShowingAnimatedScreen(true);
+    setTimeout(() => {
+      setIsShowingAnimatedScreen(false);
+      toast.success( "Enhorabuena" + ( customerName? ( " " + customerName ) : "" ) + "! un super descuento de " + promoCodeItem.discount + "% ha sido aplicado a tu compra!" );
+    }, 5000);
+  } else{
+    setShowPromoCode(false);
+    setRefreshData(!refreshData);
+    toast.error( "Lo siento! el código que ha ingresado no existe." );
+  }
+}
  
 const updateSelectedCategory = ( pSelected: string) => {
   setSelectedCategory(pSelected);
   setRandomBurgerData( shuffleArray(
     burgerData.map(item => ({ ...item, quantity: 1 })), pSelected) );
 }
+
+const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
+
 
   
 
@@ -189,7 +240,23 @@ const updateSelectedCategory = ( pSelected: string) => {
       <CssBaseline />
       <Header openCartCallback={openCart}/>
       
-      
+      <Modal
+        open={isShowingAnimatedScreen}
+        onClose={() => setIsShowingAnimatedScreen(false)}
+        aria-labelledby="parent-modal-title"
+        aria-describedby="parent-modal-description"
+      >
+        <div className={`mascot ${isShowingAnimatedScreen ? 'fade-in' : 'fade-out'}`}>
+          <div className="modal-overlay" style={{ backgroundColor: 'black' }}>
+            <Paper className="mascot-modal-content" elevation={3}>
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                <img src={ Math.random() < 0.5 ? ImgPromoGuy: ImgPromoGuyTwo } alt="Promo Code" style={{ width: '100%' }} />
+              </Box>
+            </Paper>
+          </div>
+        </div>
+      </Modal>
+
       <Modal
         open={isCartOpen}
         onClose={() => setIsCartOpen(false)}
@@ -235,6 +302,31 @@ const updateSelectedCategory = ( pSelected: string) => {
                   </List>
                 </Paper>
 
+                {showPromoCode &&
+                <>
+                  <Typography
+                    fontSize="1.2em"
+                    variant="subtitle1"
+                    gutterBottom
+                    paddingTop={2}
+                    fontWeight="bold"
+                  >
+                    Subtotal: ₡{cartSubtotal.toFixed(0)} colones
+                  </Typography>
+
+                  <Typography
+                    fontSize="1em"
+                    variant="subtitle1"
+                    gutterBottom
+                    color={"green"}
+                    paddingTop={2}
+                    fontWeight="bold"
+                    >
+                    Descuent aplicado: ₡{cartSubtotal - cartTotalCost} colones
+                  </Typography>
+                </>
+                }
+
                 <Typography
                   fontSize="1.5em"
                   variant="subtitle1"
@@ -244,6 +336,21 @@ const updateSelectedCategory = ( pSelected: string) => {
                 >
                   Total: ₡{cartTotalCost.toFixed(0)} colones
                 </Typography>
+
+                {showPromoCode &&
+                  <Typography
+                    fontSize="1em"
+                    variant="subtitle1"
+                    gutterBottom
+                    paddingTop={2}
+                    fontWeight="bold"
+                  >
+                    Código de promoción: {promoCode} ❤️
+                  </Typography>
+                }
+                
+                
+
                 <TextField
                   label="Ingresa tu nombre completo"
                   value={customerName}
@@ -255,6 +362,15 @@ const updateSelectedCategory = ( pSelected: string) => {
                   label="Ingresa acá tu número de teléfono"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
+                  fullWidth
+                  margin="normal"
+                  sx={{ pb: 2 }}
+                />
+                <TextField
+                  label="¿Tienes un código de promoción? Ingrésalo acá!"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                  onBlur={() => applyPromoCode(promoCode)}
                   fullWidth
                   margin="normal"
                   sx={{ pb: 2 }}
@@ -300,10 +416,19 @@ const updateSelectedCategory = ( pSelected: string) => {
                       {cartItems.map((item: any, index) => (
                         <ListItem key={index}>
                           <Grid container spacing={2}>
+                          <Grid item xs={12} lg={0.5}>
+                              <IconButton
+                                color="secondary"
+                                aria-label="Delete"
+                                onClick={() => removeFromCart(index)}
+                              >
+                                {isMobile ? 'Eliminar' : ''} <DeleteIcon />
+                              </IconButton>
+                            </Grid>
                             <Grid
                               item
                               xs={12}
-                              lg={ ( ( item.category == 'wings' ) || ( item.category == 'burger' ) ) ? 1.7 : 11}
+                              lg={ ( ( item.category === 'wings' ) || ( item.category === 'burger' ) || ( item.category === 'burrito' ) ) ? 1.7 : 11}
                             >
                               <ListItemText
                                 primary={`${item.name} x${item.quantity}`}
@@ -312,7 +437,7 @@ const updateSelectedCategory = ( pSelected: string) => {
                             </Grid>
                             <Grid
                               sx={{
-                                display: ( ( item.category == 'wings' ) || ( item.category == 'burger' ) ) ? '' : 'none',
+                                display: ( ( item.category === 'wings' ) || ( item.category === 'burger' ) || ( item.category === 'burrito' ) ) ? '' : 'none',
                               }}
                               item
                               xs={12}
@@ -339,15 +464,7 @@ const updateSelectedCategory = ( pSelected: string) => {
                                 
                               </Grid>
                             </Grid>
-                            <Grid item xs={12} lg={1}>
-                              <IconButton
-                                color="secondary"
-                                aria-label="Delete"
-                                onClick={() => removeFromCart(index)}
-                              >
-                                {isMobile ? 'Eliminar' : ''} <DeleteIcon />
-                              </IconButton>
-                            </Grid>
+                            
                           </Grid>
                         </ListItem>
                       ))}
@@ -421,12 +538,7 @@ const updateSelectedCategory = ( pSelected: string) => {
             sx={{ fontSize: { lg: '1.3em', xs: '0.8em' }, paddingLeft: 6, paddingRight: 6, pt: {lg:4, xs:2}, pb: {lg:0, xs:3} }}>
             Elige tus hamburguesas favoritas, selecciona la cantidad y haz clic en el botón 'Agregar al carrito' para realizar tu pedido en línea.<br/> Todas las hamburguesas incluyen una orden de papas gajo 🍟 
           </Typography>
-          {/*isMobile ? (
-            <Typography align="center" color="text.secondary" paragraph
-            sx={{ fontSize: { lg: '1.3em', xs: '0.8em' }, fontWeight: "bold", paddingLeft: 6, paddingRight: 6, pt: {lg:1, xs:2}, pb: {lg:0, xs:3} }}>
-              * Mantén presionada las imágenes para ver los ingredientes de cada platillo.
-            </Typography>
-          ) : "" */}
+         
 
             
         </Container>
@@ -451,6 +563,11 @@ const updateSelectedCategory = ( pSelected: string) => {
               <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={3}>
                 <Button sx={{backgroundColor:( selectedCategory === "beverage"? "red" : "white"), color:( selectedCategory === "beverage"? "white" : "black"), width:"90%"}} variant="contained" size="large" onClick={() => updateSelectedCategory('beverage')}>
                   Bebidas
+                </Button>
+              </Grid>
+              <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={3}>
+                <Button sx={{backgroundColor:( selectedCategory === "other"? "red" : "white"), color:( selectedCategory === "other"? "white" : "black"), width:"90%"}} variant="contained" size="large" onClick={() => updateSelectedCategory('other')}>
+                  Otros
                 </Button>
               </Grid>
           </Grid>

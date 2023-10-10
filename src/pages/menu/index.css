@@ -16,3 +16,28 @@
     align-items: center;
     flex-direction: column; /* If needed, to center vertically */
   }
+
+
+.maskot {
+  /* Your modal styles go here */
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+  position: absolute;
+  z-index: 9999999999999999;
+}
+
+.fade-in {
+  opacity: 1;
+}
+
+.fade-out {
+  opacity: 0;
+}
+
+.mascot-modal-content {
+    background-color: white;
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }

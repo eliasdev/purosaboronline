@@ -10,12 +10,12 @@ const defaultTheme = createTheme();
 export default function Footer() {
   return (
     <Typography variant="body2" color="text.secondary" align="center">
-    {'Copyright © '}
-    <Link color="inherit" href="https://purosaborps.com">
-      purosaborps.com
-    </Link>{' '}
-    {new Date().getFullYear()}
-    {'.'}
-  </Typography>
+      {'Copyright © '}
+      <Link color="inherit" href="https://www.purosaborps.com">
+        www.purosaborps.com
+      </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
   );
 }

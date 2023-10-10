@@ -17,15 +17,21 @@ import ImgHtwoO from '../../assets/menu/h2o.png';
 import ImgFriesRectangle from '../../assets/menu/papas_rectangulo.png';
 import ImgFriesWedges from '../../assets/menu/papas_gajo.png';
 import ImgComboFour from '../../assets/menu/combo_four.png';
+import ImgComboDuo from '../../assets/menu/combo_duo.png';
 import ImgComboYankee from '../../assets/menu/combo_yankee.png';
 import ImgChickenWings8 from '../../assets/menu/chickenwings8.png';
 import ImgChickenWings16 from '../../assets/menu/chickenwings16.png';
+import ImgBurrito from '../../assets/menu/burrito.png';
+import ImgChickenFajitas from '../../assets/menu/chicken_fajitas.png';
 
 const extraIngredients = [{name:"doble queso", price: 200, selected: false}, {name:"doble torta", price: 1000, selected: false}, {name:"tocineta", price: 500, selected: false}, {name:"extra pepinillos", price: 300, selected: false}];
 const chickenWingsExtras = [{name:"salsa buffalo", price: 0}, {name:"salsa BBQ", price: 0}, {name:"salsa mostaza miel", price: 0}];
+const burritoExtras = [{name:"de pollo", price: 0}, {name:"de carne", price: 0}];
+
+
 export const burgerData: CartItem[] = [
-    { name: 'Special Taste', description: "Torta angus 1/4 de libra, tomate, cebolla morada, queso mozzarella, guacamole especial, papas gajo, aderezo chipotle.", basePrice: 5800, price: 5800, img: ImgSpecial, quantity: 1, available: true, category: 'dish', ingreds: ["tomate","cebolla","queso","guacamole"], extras: extraIngredients },
-    { name: 'Chicago', description: "Pechuga de pollo, queso mozarella, tomate, lechuga, pepinillos, cebolla caramelizada, salsa ranch, papas gajo, aderezo chipotle.", basePrice: 5800, price: 5800, img: ImgChicago, quantity: 1, available: true, category: 'dish', ingreds: ["queso", "tomate", "pepinillos", "cebolla"], extras: extraIngredients },
+    { name: 'Special Taste', description: "Torta angus 1/4 de libra, tomate, cebolla morada, queso mozzarella, guacamole especial, papas gajo, aderezo chipotle.", basePrice: 5800, price: 5800, img: ImgSpecial, quantity: 1, available: true, category: 'burger', ingreds: ["tomate","cebolla","queso","guacamole"], extras: extraIngredients },
+    { name: 'Chicago', description: "Pechuga de pollo, queso mozarella, tomate, lechuga, pepinillos, cebolla caramelizada, salsa ranch, papas gajo, aderezo chipotle.", basePrice: 5800, price: 5800, img: ImgChicago, quantity: 1, available: true, category: 'burger', ingreds: ["queso", "tomate", "pepinillos", "cebolla"], extras: extraIngredients },
     { name: 'Pulled Pork', description: "Carne mechada de cerdo en salsa barbacoa, tomate, queso mozarella, cebolla caramelizada, salsa ranch, papas gajo, aderezo chipotle.", basePrice: 5800, price: 5800, img: ImgPulledPork, quantity: 1, available: true, category: "burger", ingreds: ["queso", "tomate", "cebolla"], extras: extraIngredients },
     { name: 'Big One', description: "Torta angus 1/4 de libra, queso amarillo, tomate, cebolla morada, papas gajo.", basePrice: 5800, price: 5800, img: ImgBigOne, quantity: 1, available: true, category: "burger", ingreds: ["queso", "tomate", "cebolla"], extras: extraIngredients },
     { name: 'New York', description: "Torta de carne, queso mozarella, tomate, lechuga, pepinillo, cebolla caramelizada, salsa ranch, papas gajo, aderezo chipotle.", basePrice: 5000, price: 5000, img: ImgNewYork, quantity: 1, available: true, category: "burger", ingreds: ["queso", "tomate", "lechuga", "pepinillo", "cebolla"], extras: extraIngredients },
@@ -39,8 +45,13 @@ export const burgerData: CartItem[] = [
     { name: 'Coca Cola (sin azúcar) 600ml', description: null, basePrice: 1000, price: 1000, img: ImgCocaSinAzucar, quantity: 1, available: true, category: "beverage", ingreds: [], extras:[] },
     { name: 'Tropical Melocotón 600ml', description: null, basePrice: 1000, price: 1000, img: ImgTropical, quantity: 1, available: true, category: "beverage", ingreds: [], extras:[] },
     { name: 'H2O 600ml', description: null, basePrice: 1000, price: 1000, img: ImgHtwoO, quantity: 1, available: true, category: 'beverage', ingreds: [], extras:[] },
-    { name: 'Combo 4 Jinetes', description: "Elige una hamburguesa entre la New York, Chicago, Italiana o Mexicana + papas gajo y un refresco Tropical de 600ml.", basePrice: 5990, price: 5990, img: ImgComboFour, quantity: 1, available: true, category: 'combo', ingreds: [], extras: [] },
-    { name: 'Combo Yankee Pack', description: "1 Chicago + 1 New York + 1 orden de Alitas de Pollo con 16 unidades y un refresco Tropical de 2.5l.", basePrice: 19900, price: 19900, img: ImgComboYankee, quantity: 1, available: true, category: 'combo', ingreds: [], extras: [] },
+    { name: 'Combo 4 Jinetes', description: "Elige una hamburguesa entre la New York, Chicago, Italiana o Mexicana + papas gajo y un refresco Tropical de 600ml.", basePrice: 5900, price: 5900, img: ImgComboFour, quantity: 1, available: true, category: 'combo', ingreds: [], extras: [] },
+    { name: 'Combo Yankee Pack', description: "1 Chicago + 1 New York + 1 orden de Alitas de Pollo con 16 unidades + 400g de papas fritas + un refresco Tropical de 2L.", basePrice: 19900, price: 19900, img: ImgComboYankee, quantity: 1, available: true, category: 'combo', ingreds: [], extras: [] },
+    { name: 'Combo Doble Sabor', description: "Elige una hamburguesa entre la New York, Chicago, Italiana o Mexicana acompañada de papas gajo + una orden de 8 alitas + un acompañamiento de 250g de papas fritas + dos refrescos Tropical de 600ml.", basePrice: 10900, price: 10900, img: ImgComboDuo, quantity: 1, available: true, category: 'combo', ingreds: [], extras: [] },
     { name: 'Alitas de Pollo (8uds)', description: "8 Alitas de Pollo con 3 opciones de salsas exquisitas: la picante Buffalo, la dulce y ahumada Barbacoa, y la suave y deliciosa Mostaza Miel acompañadas de 250g de crujientes papas fritas.", basePrice: 5900, price: 5900, img: ImgChickenWings8, quantity: 1, available: true, category: "wings", ingreds: [], extras: chickenWingsExtras },
     { name: 'Alitas de Pollo (16uds)', description: "16 Alitas de Pollo con 3 opciones de salsas exquisitas: la picante Buffalo, la dulce y ahumada Barbacoa, y la suave y deliciosa Mostaza Miel acompañadas de 400g de crujientes papas fritas.", basePrice: 9900, price: 9900, img: ImgChickenWings16, quantity: 1, available: true, category: "wings", ingreds: [], extras: chickenWingsExtras },
+    { name: 'Burrito Supremo', description: "Burrito relleno de suculento pollo a la parrilla o tierna carne de res sazonada, junto con una mezcla perfecta de frijoles refritos, queso derretido, aguacate cremoso y chimichurri, acompañado de 250gramos de papas a la francesa.", basePrice: 4000, price: 4000, img:  ImgBurrito, quantity: 1, available: true, category: "other", ingreds: [], extras: burritoExtras },
+    { name: 'Fajitas de Pollo', description: "Jugosos trozos de pechuga de pollo empanizados y dorados a la perfección te esperan en cada bocado. Acompañadas de 250gramos de papas a la francesa, nuestras fajitas son tiernas por dentro y crujientes por fuera.", basePrice: 4000, price: 4000, img:  ImgChickenFajitas, quantity: 1, available: true, category: "other", ingreds: [], extras: [] }
   ];
+
+export const promoCodeList = [ { key:"macabroso", discount:10 }, { key:"lamona", discount:20 } ];
