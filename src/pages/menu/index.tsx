@@ -15,54 +15,18 @@ import Header from '../../modules/sections/header';
 import { CartItem } from '../../types/index'; // Import the CartItem type
 import "./index.css";
 import "../../modules/components/cartModal/index.css";
-import ImgBigOne from '../../assets/menu/bigone.png';
-import ImgChicago from '../../assets/menu/chicago.png';
-import ImgPulledPork from '../../assets/menu/pulled.png';
-import ImgMexicana from '../../assets/menu/mexicana.png';
-import ImgItaliana from '../../assets/menu/italiana.png';
-import ImgSpecial from '../../assets/menu/special.png';
-import ImgSweet from '../../assets/menu/sweet.png';
-import ImgNewYork from '../../assets/menu/newyork.png';
-import ImgVeggie from '../../assets/menu/veggie.png';
-import ImgCoca from '../../assets/menu/coca.png';
-import ImgCocaSinAzucar from '../../assets/menu/cocazucar.png';
-import ImgTropical from '../../assets/menu/tropical.png';
-import ImgHtwoO from '../../assets/menu/h2o.png';
-import ImgFriesRectangle from '../../assets/menu/papas_rectangulo.png';
-import ImgFriesWedges from '../../assets/menu/papas_gajo.png';
-import ImgComboFour from '../../assets/menu/combo_four.png';
-import ImgComboYankee from '../../assets/menu/combo_yankee.png';
+
 import { isMobile } from 'react-device-detect';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Divider, Modal, Checkbox, Backdrop, List,  ListItem,  ListItemText,  Paper, TextField } from '@mui/material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { burgerData } from '../../modules/context/data';
 
 
 // TODO remove, this demo shouldn't need to reset the theme.
-const extraIngredients = [{name:"doble queso", price: 200}, {name:"doble torta", price: 1000}, {name:"tocineta", price: 500}, {name:"extra pepinillos", price: 300}];
 const defaultTheme = createTheme();
-const burgerData: CartItem[] = [
-  { name: 'Special Taste', description: "Torta angus 1/4 de libra, tomate, cebolla morada, queso mozzarella, guacamole especial, papas gajo, aderezo chipotle.", basePrice: 5800, price: 5800, img: ImgSpecial, quantity: 1, available: true, category: 'dish', ingreds: ["tomate","cebolla","queso","guacamole"], extras: extraIngredients },
-  { name: 'Chicago', description: "Pechuga de pollo, queso mozarella, tomate, lechuga, pepinillos, cebolla caramelizada, salsa ranch, papas gajo, aderezo chipotle.", basePrice: 5800, price: 5800, img: ImgChicago, quantity: 1, available: true, category: 'dish', ingreds: ["queso", "tomate", "pepinillos", "cebolla"], extras: extraIngredients },
-  { name: 'Pulled Pork', description: "Carne mechada de cerdo en salsa barbacoa, tomate, queso mozarella, cebolla caramelizada, salsa ranch, papas gajo, aderezo chipotle.", basePrice: 5800, price: 5800, img: ImgPulledPork, quantity: 1, available: true, category: "dish", ingreds: ["queso", "tomate", "cebolla"], extras: extraIngredients },
-  { name: 'Big One', description: "Torta angus 1/4 de libra, queso amarillo, tomate, cebolla morada, papas gajo.", basePrice: 5800, price: 5800, img: ImgBigOne, quantity: 1, available: true, category: "dish", ingreds: ["queso", "tomate", "cebolla"], extras: extraIngredients },
-  { name: 'New York', description: "Torta de carne, queso mozarella, tomate, lechuga, pepinillo, cebolla caramelizada, salsa ranch, papas gajo, aderezo chipotle.", basePrice: 5000, price: 5000, img: ImgNewYork, quantity: 1, available: true, category: "dish", ingreds: ["queso", "tomate", "lechuga", "pepinillo", "cebolla"], extras: extraIngredients },
-  { name: 'Italiana', description: "Pechuga de pollo, queso mozarella, tomate hojas de albahaca, salsa prego, pesto, salsa ranch, papas gajo, aderezo chipotle.", basePrice: 5800, price: 5800, img: ImgItaliana, quantity: 1, available: true, category: "dish", ingreds: ["queso", "tomate", "albahaca", "pesto"], extras: extraIngredients },
-  { name: 'Mexicana', description: "Torta de res, cebolla caramelizada, queso mozarella, tomate, lechuga, chile jalapeño, papas gajo, aderezo chipotle.", basePrice: 5800, price: 5800, img: ImgMexicana, quantity: 1, available: true, category: "dish", ingreds: ["cebolla", "queso", "tomate", "lechuga", "chile"], extras: extraIngredients },
-  { name: 'Sweet Explosion', description: "Torta angus 1/4 de libra, cebolla caramelizada, tomate, queso mozzarella, salsa BBQ, papas gajo, aderezo chipotle.", basePrice: 5800, price: 5800, img: ImgSweet, quantity: 1, available: true, category: "dish", ingreds: ["cebolla", "tomate", "queso"], extras: extraIngredients },
-  { name: 'Papas regulares', description: null, basePrice: 1800, price: 1800, img: ImgFriesRectangle, quantity: 1, available: true, category: "sides", ingreds: [], extras:[] },
-  { name: 'Papas gajo', description: null, basePrice: 1800, price: 1800, img: ImgFriesWedges, quantity: 1, available: true, category: "sides", ingreds: [], extras:[] },
-  { name: 'Veggie', description: "Pan twings, torta de falafel, hongos, tomate, zucchini, aguacate, cebolla morada, salsa mostaza miel, papas gajo, aderezo chipotle.", basePrice: 6500, price: 6500, img: ImgVeggie, quantity: 1, available: true, category: "dish", ingreds: ["hongos", "tomate", "zucchini", "aguacate", "cebolla"], extras: extraIngredients },
-  { name: 'Coca Cola Regular 600ml', description: null , basePrice: 1000, price: 1000, img: ImgCoca, quantity: 1, available: true, category: "beverage", ingreds: [], extras:[] },
-  { name: 'Coca Cola (sin azúcar) 600ml', description: null, basePrice: 1000, price: 1000, img: ImgCocaSinAzucar, quantity: 1, available: true, category: "beverage", ingreds: [], extras:[] },
-  { name: 'Tropical Melocotón 600ml', description: null, basePrice: 1000, price: 1000, img: ImgTropical, quantity: 1, available: true, category: "beverage", ingreds: [], extras:[] },
-  { name: 'H2O 600ml', description: null, basePrice: 1000, price: 1000, img: ImgHtwoO, quantity: 1, available: true, category: 'beverage', ingreds: [], extras:[] },
-  { name: 'Combo 4 Jinetes', description: "Elige una hamburguesa entre la New York, Chicago, Italiana o Mexicana + papas gajo y un refresco Tropical de 600ml.", basePrice: 5990, price: 5990, img: ImgComboFour, quantity: 1, available: true, category: 'combo', ingreds: [], extras: [] },
-  { name: 'Combo Yankee Pack', description: "1 Chicago + 1 New York + 1 orden de Alitas de Pollo con 16 unidades y un refresco Tropical de 2.5l.", basePrice: 19900, price: 19900, img: ImgComboYankee, quantity: 1, available: true, category: 'combo', ingreds: [], extras: [] }
-];
-
 
 
 export default function Menu() {
@@ -74,6 +38,11 @@ export default function Menu() {
   const [customerName, setCustomerName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
+  const findMenuItemPrice = (itemName: string): number => {
+    const menuItem = burgerData.find(item => item.name === itemName);
+    return menuItem ? menuItem.basePrice : 0;
+  };
+
   const handleExtraChange = (pItemIndex: number, pExtraIndex: number) => {
     const updatedCartItems = JSON.parse(JSON.stringify(cartItems)); // Create a deep copy of cartItems
   
@@ -81,8 +50,15 @@ export default function Menu() {
       ...updatedCartItems[pItemIndex],
       extras: [...updatedCartItems[pItemIndex].extras] // Create a new array for extras
     };
-  
-    updatedCartItems[pItemIndex].price = burgerData[pItemIndex].basePrice;
+    console.log("THIS SHIT",updatedCartItems[pItemIndex]);
+    //console.log("updatedCartItems[pItemIndex].price",updatedCartItems[pItemIndex].price);
+    //console.log("burgerData[pItemIndex].basePrice",burgerData[pItemIndex].basePrice);
+
+    console.log(pItemIndex);
+    //alert(burgerData[pItemIndex].basePrice);
+    //alert(findMenuItemPrice(updatedCartItems[pItemIndex].name));
+    updatedCartItems[pItemIndex].price = findMenuItemPrice(updatedCartItems[pItemIndex].name);
+    //console.log("updatedCartItems",updatedCartItems[pItemIndex]);
     updatedCartItems[pItemIndex].extras[pExtraIndex] = {
       ...updatedCartItems[pItemIndex].extras[pExtraIndex],
       selected: !updatedCartItems[pItemIndex].extras[pExtraIndex].selected
@@ -105,18 +81,14 @@ export default function Menu() {
           if (extra?.selected !== undefined && extra?.selected !== null && ( extra.selected == true ) ) {
             // Add extra price to item price only if the checkbox is checked
             //console.log("add");
-            itemPrice += extra.price;
+            itemPrice = ( element.price + extra.price );
             element.price = itemPrice;
-          } else if( ( typeof extra?.selected == "boolean" ) && ( extra?.selected == false ) ){
-            //console.log("substract");
-            //itemPrice -= extra.price;
-            //element.price = itemPrice;
           }
         });
       }
       total += element.price;
     });
-    console.log( cartItems );
+    //console.log( cartItems );
   
     // Update cartTotalCost state
     setCartTotalCost(total);
@@ -365,8 +337,7 @@ export default function Menu() {
                               <Grid container spacing={1}>
 
                                 {item.extras.map((extraIngred: any, extra_index: number) => (
-                                  <Grid item xs={12} lg={extraIngred.name.length / item.extras.length} key={extra_index}>
-                                    <span>{extraIngred.name} | ₡{extraIngred.price}</span>
+                                  <Grid item xs={12} lg={extraIngred.name.length / item.extras.length*0.9} key={extra_index}>
                                     <Checkbox
                                       value={extraIngred.name}
                                       disabled={false}
@@ -375,6 +346,7 @@ export default function Menu() {
                                         handleExtraChange(index, extra_index);
                                       }}
                                     />
+                                    <span>₡{extraIngred.price} | {extraIngred.name}</span>
                                   </Grid>
                                 ))}
                                 
