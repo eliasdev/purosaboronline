@@ -140,6 +140,11 @@ export default function Menu() {
   
   const [isCartOpen, setIsCartOpen] = useState(false);
 
+  const openCart = () => {
+    // Function to open the modal in Menu component
+    setIsCartOpen(true);
+  };
+
   const [randomBurgerData, setRandomBurgerData] = useState<CartItem[]>(shuffleArray(
     burgerData.map(item => ({ ...item, quantity: 1 }))));
 
@@ -148,7 +153,7 @@ export default function Menu() {
   };
 
   const addToCart = (item: CartItem) => {
-    const existingItemIndex = cartItems.findIndex((cartItem) => cartItem.name === item.name);
+    //const existingItemIndex = cartItems.findIndex((cartItem) => cartItem.name === item.name);
     setCartItems((prevCartItems) => [...prevCartItems, item]);
     setRefreshData(!refreshData);
     setShowConfirmation(false);
@@ -190,7 +195,7 @@ export default function Menu() {
 
         window.open('https://wa.me/50685194028?text=' + formattedOrderText, '_blank');
     } else {
-        toast.error('Ingresa tu información personal para completar tu orden.', {
+        toast.error('Ingresa tu información personal para completar la orden.', {
             position: toast.POSITION.TOP_CENTER,
         });
     }
@@ -201,7 +206,7 @@ export default function Menu() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      <Header />
+      <Header openCartCallback={openCart}/>
       
       
       <Modal
@@ -238,7 +243,7 @@ export default function Menu() {
                               <span>{`${item.name} x${item.quantity} = ₡${item.basePrice}`} ( <b>Extras</b>:  {item.extras
                                       .filter((extra: any ) => extra.selected)
                                       .map((extra:any) => `${extra.name} ₡${extra.price}`)
-                                      .join(', ')} ) {item.category === 'dish' ? '🍔' : item.category === 'beverage' ? '🥤' : ''}  | ₡{item.price}</span>
+                                      .join(', ')} ) {item.category === 'burger' ? '🍔' : item.category === 'beverage' ? '🥤' : ''}  | ₡{item.price}</span>
                               
                               
                             </div>
@@ -317,7 +322,7 @@ export default function Menu() {
                             <Grid
                               item
                               xs={12}
-                              lg={item.category == 'dish' ? 1.7 : 11}
+                              lg={ ( ( item.category == 'wings' ) || ( item.category == 'burger' ) ) ? 1.7 : 11}
                             >
                               <ListItemText
                                 primary={`${item.name} x${item.quantity}`}
@@ -326,7 +331,7 @@ export default function Menu() {
                             </Grid>
                             <Grid
                               sx={{
-                                display: item.category == 'dish' ? '' : 'none',
+                                display: ( ( item.category == 'wings' ) || ( item.category == 'burger' ) ) ? '' : 'none',
                               }}
                               item
                               xs={12}
@@ -412,7 +417,7 @@ export default function Menu() {
 
       <main>
       <Container
-        maxWidth="xl"
+        maxWidth={false}
         sx={{
           bgcolor: 'background.paper',
           pt: 3,
@@ -441,10 +446,41 @@ export default function Menu() {
               * Mantén presionada las imágenes para ver los ingredientes de cada platillo.
             </Typography>
           ) : "" */}
+
+            
         </Container>
 
-        <Container sx={{ py: 2 }} maxWidth="lg">
+        <Container sx={{ py: 4 }} maxWidth="lg">
+          <Grid container textAlign={"center"}>
+              <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={3}>
+                <Button sx={{width:"90%"}} variant="contained" size="large">
+                  Hamburguesas
+                </Button>
+              </Grid>
+              <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={3}>
+                <Button sx={{width:"90%"}} variant="contained" size="large">
+                  Alitas
+                </Button>
+              </Grid>
+              <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={3}>
+                <Button sx={{width:"90%"}} variant="contained" size="large">
+                  Combos
+                </Button>
+              </Grid>
+              <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={3}>
+                <Button sx={{width:"90%"}} variant="contained" size="large">
+                  Bebidas
+                </Button>
+              </Grid>
+          </Grid>
+        </Container>
+
+
+        <Container maxWidth="lg">
+
+
           <Grid sx={{margin: '0 auto'}} container spacing={4}>
+            
             {randomBurgerData.map((burger, index) => (
               <Grid item key={index} xs={12} sm={6} md={4}>
                 <Card

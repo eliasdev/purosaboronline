@@ -1,10 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, useMediaQuery, useTheme, Modal, Backdrop } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { WindowOutlined } from '@mui/icons-material';
 // ... (previous imports)
 
-function Header() {
+
+interface HeaderProps {
+  openCartCallback: () => void;
+}
+
+const Header: FC<HeaderProps> = ({ openCartCallback }) => {
+  //
+
+
+      const openCart = () => {
+        // Call the openCartCallback function passed as a prop
+        if (openCartCallback) {
+            openCartCallback();
+        }
+        closeMenu();
+    };
     const theme = useTheme();
     const [isScheduleOpen, setIsScheduleOpen] = useState(false);
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -71,16 +86,18 @@ function Header() {
                 open={Boolean(anchorEl)}
                 onClose={closeMenu}
               >
+                <MenuItem onClick={openCart}>Carrito de Compras 🛒</MenuItem>
                 <MenuItem onClick={downloadMenu}>Descargar Menú 🍔</MenuItem>
-                <MenuItem onClick={contactUs}>Contacto 📲</MenuItem>
                 <MenuItem onClick={openSchedule}>Horario ⏰</MenuItem>
+                <MenuItem onClick={contactUs}>Contacto 📲</MenuItem>
               </Menu>
             </>
           ) : (
             <>
+              <MenuItem onClick={openCart}>Carrito de Compras 🛒</MenuItem>
               <MenuItem onClick={downloadMenu}>Descargar Menú 🍔</MenuItem>
-              <MenuItem onClick={contactUs}>Contacto 📲</MenuItem>
               <MenuItem onClick={openSchedule}>Horario ⏰</MenuItem>
+              <MenuItem onClick={contactUs}>Contacto 📲</MenuItem>
             </>
           )}
         </Toolbar>
