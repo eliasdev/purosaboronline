@@ -180,7 +180,7 @@ export default function Menu() {
       if (promoCode) {
         const promoCodeDiscount = promoCodeList.find((code) => code.key === promoCode);
         if (promoCodeDiscount) {
-          promoCodeMessage = `Descuento aplicado: ${promoCodeDiscount.discount}% %0a`;
+          promoCodeMessage = `Descuento aplicado: (${promoCodeDiscount.discount}%) ₡${cartSubtotal - cartTotalCost} %0a`;
         }
       }
   
@@ -192,7 +192,7 @@ export default function Menu() {
                   .join(', ');
               return `${item.name} x${item.quantity} - ₡${item.basePrice}${selectedExtras ? ' (Extras: ' + selectedExtras + ')' : ''}`;
           })
-          .join('%0a')}%0a${promoCodeMessage}%0a%0aTotal: ₡${cartTotalCost.toFixed(0)} colones%0a%0a*NO OLVIDES ENVIAR ESTE MENSAJE*`;
+          .join('%0a')}%0aSubtotal: ₡${cartSubtotal.toFixed(0)} colones%0a${promoCodeMessage}%0a%0aTotal: ₡${cartTotalCost.toFixed(0)} colones%0a%0a*NO OLVIDES ENVIAR ESTE MENSAJE*`;
   
       window.open('https://wa.me/50685194028?text=' + formattedOrderText, '_blank');
     } else {
@@ -215,7 +215,7 @@ const applyPromoCode = ( pPromoCode : string ) => {
     setIsShowingAnimatedScreen(true);
     setTimeout(() => {
       setIsShowingAnimatedScreen(false);
-      toast.success( "Enhorabuena" + ( customerName? ( " " + customerName ) : "" ) + "! un super descuento de " + promoCodeItem.discount + "% ha sido aplicado a tu compra!" );
+      toast.success( "Bien hecho" + ( customerName? ( " " + customerName ) : "" ) + "! un super descuento de " + promoCodeItem.discount + "% ha sido aplicado a tu compra!" );
     }, 5000);
   } else{
     setShowPromoCode(false);
