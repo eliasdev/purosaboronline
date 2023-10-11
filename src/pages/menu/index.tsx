@@ -377,6 +377,7 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                 <TextField
                   label="Ingresa acá tu número de teléfono"
                   value={phoneNumber}
+                  type="number"
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   fullWidth
                   margin="normal"
