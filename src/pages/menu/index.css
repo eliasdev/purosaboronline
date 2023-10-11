@@ -40,4 +40,30 @@
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
+}
+
+
+/* styles.css */
+.floating-cart {
+  position: fixed;
+  bottom: 5%; /* Adjust the distance from the bottom as per your preference */
+  right: 5%; /* Adjust the distance from the right as per your preference */
+  width: 130px; /* Set the initial width of the floating image */
+  height: auto; /* Automatically adjust the height while maintaining the aspect ratio */
+  z-index: 9999; /* Set a high z-index value to ensure the image stays on top of other elements */
+  transition: width 0.3s ease; /* Add a transition effect for the width property */
+  cursor: pointer;
+}
+
+.floating-cart:hover {
+  width: 160px; /* Adjust the width on hover to make it grow */
+}
+
+.even-item {
+  background-color: white; /* Set your desired background color for even items */
+}
+
+.odd-item {
+  border-top: 2px dotted #f00;
+  background-color: lightgray; /* Set your desired background color for odd items */
+}

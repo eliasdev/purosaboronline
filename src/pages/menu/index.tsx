@@ -17,6 +17,7 @@ import "./index.css";
 import "../../modules/components/cartModal/index.css";
 import ImgPromoGuy from '../../assets/promoguy1.webp';
 import ImgPromoGuyTwo from '../../assets/promoguy2.webp';
+import ImgFloatingCart from '../../assets/cart.png';
 import { isMobile } from 'react-device-detect';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -50,20 +51,11 @@ export default function Menu() {
 
   const handleExtraChange = (pItemIndex: number, pExtraIndex: number) => {
     const updatedCartItems = JSON.parse(JSON.stringify(cartItems)); // Create a deep copy of cartItems
-  
     updatedCartItems[pItemIndex] = {
       ...updatedCartItems[pItemIndex],
       extras: [...updatedCartItems[pItemIndex].extras] // Create a new array for extras
     };
-    console.log("THIS SHIT",updatedCartItems[pItemIndex]);
-    //console.log("updatedCartItems[pItemIndex].price",updatedCartItems[pItemIndex].price);
-    //console.log("burgerData[pItemIndex].basePrice",burgerData[pItemIndex].basePrice);
-
-    console.log(pItemIndex);
-    //alert(burgerData[pItemIndex].basePrice);
-    //alert(findMenuItemPrice(updatedCartItems[pItemIndex].name));
     updatedCartItems[pItemIndex].price = findMenuItemPrice(updatedCartItems[pItemIndex].name);
-    //console.log("updatedCartItems",updatedCartItems[pItemIndex]);
     updatedCartItems[pItemIndex].extras[pExtraIndex] = {
       ...updatedCartItems[pItemIndex].extras[pExtraIndex],
       selected: !updatedCartItems[pItemIndex].extras[pExtraIndex].selected
@@ -81,13 +73,9 @@ export default function Menu() {
   
     cartItems.forEach((element) => {
       let itemPrice = element.basePrice; // Initialize item price with base price without extras
-      
       if (element.extras && element.extras.length > 0) {
         element.extras.forEach((extra:any, extraIndex: number) => {
-          //console.log("extraIndex", extraIndex);
-          if (extra?.selected !== undefined && extra?.selected !== null && ( extra.selected == true ) ) {
-            // Add extra price to item price only if the checkbox is checked
-            //console.log("add");
+          if (extra?.selected !== undefined && extra?.selected !== null && ( extra.selected === true ) ) {
             itemPrice = ( element.price + extra.price );
             element.price = itemPrice;
           }
@@ -97,8 +85,6 @@ export default function Menu() {
       subtotal += element.price;
     });
 
-    
-
     if (promoCode) {
       setPromoCode(promoCode.toLowerCase());
       const promoCodeDiscount = promoCodeList.find((code) => code.key === promoCode);
@@ -106,7 +92,6 @@ export default function Menu() {
         total -= (total * promoCodeDiscount.discount) / 100;
       }
     }
-    //console.log( cartItems );
   
     // Update cartTotalCost state
     setCartSubtotal(subtotal);
@@ -239,6 +224,11 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <Header openCartCallback={openCart}/>
+
+      <div>
+        
+        <img style={{display: (isCartOpen)? "none" : "" }} alt="Abrir carrito de compras" onClick={() => setIsCartOpen(!isCartOpen)} src={ImgFloatingCart} className="floating-cart" />
+      </div>
       
       <Modal
         open={isShowingAnimatedScreen}
@@ -274,7 +264,7 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
               
               <div>
                 <Typography
-                  sx={{ fontSize: { xs: '1em', lg: '2em' } }}
+                  sx={{ fontSize: { xs: '1em', lg: '2em' }, fontWeight: "bold" }}
                   variant="h5"
                   gutterBottom
                 >
@@ -283,16 +273,23 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                 <Paper style={{ maxHeight: '300px', overflowY: 'auto' }}>
                   <List>
                     {cartItems.map((item, index) => (
-                      <ListItem style={{ height: 'auto' }} key={index}>
+                      <ListItem className={index % 2 === 0 ? 'even-item' : 'odd-item'} style={{ height: 'auto' }} key={index}>
                         <ListItemText
                           disableTypography
                           primary={
                             <div style={{ fontSize: 15 }}>
-                              <span>{`${item.name} x${item.quantity} = ₡${item.basePrice}`} { (item.extras.length? "+" : "" ) } {item.extras
-                                      .filter((extra: any ) => extra.selected)
-                                      .map((extra:any) => `${extra.name} ₡${extra.price}`)
-                                      .join(', ')} {item.category === 'burger' ? '🍔' : item.category === 'beverage' ? '🥤' : ''} { (item.extras.length? "= " + item.price : "" ) }  </span>
                               
+                              <span>
+                                { item.category === 'burger' ? '🍔' : item.category === 'beverage' ? '🥤' : item.category === 'wings' ? '🍗' : '' }
+                                { ` ${item.name} x${item.quantity} = ₡${item.basePrice}` } 
+                                { ( item.price > item.basePrice? " + " : "" ) } 
+                                
+                                { item.extras
+                                      .filter( ( extra: any ) => extra.selected )
+                                      .map( ( extra:any ) => ` ${ extra.name } ₡${ extra.price }` )
+                                      .join(' + ') } 
+                                      { ( item.price > item.basePrice? " = ₡" + item.price : "" ) }
+                              </span>
                               
                             </div>
                           }
@@ -375,7 +372,7 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                   margin="normal"
                   sx={{ pb: 2 }}
                 />
-                <div className="button-group">
+                <div className="button-group" style={{ paddingBottom: 15, paddingTop: 15 }}>
                   <Button
                     sx={{ mr: '10px', width: { lg: '37%', xs: '33%' } }}
                     variant="contained"
@@ -386,9 +383,9 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                   </Button>
                   <Button
                     variant="contained"
-                    color="primary"
+                    color="success"
                     onClick={handleConfirmOrder}
-                    sx={{ width: { lg: '59%', xs: '62%' } }}
+                    sx={{ width: { lg: '61%', xs: '63%' } }}
                   >
                     Ordenar ahora! 🍔
                   </Button>
@@ -400,7 +397,7 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                 <Box>
 
                   <Typography
-                    variant="h4"
+                    variant="h5"
                     gutterBottom
                     paddingTop={2}
                     paddingBottom={2}
@@ -410,11 +407,10 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                   </Typography>
                   
 
-
-                  <Paper style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                  <Paper style={{ maxHeight: '300px', overflowY: 'scroll' }}>
                     <List>
                       {cartItems.map((item: any, index) => (
-                        <ListItem key={index}>
+                        <ListItem className={index % 2 === 0 ? 'even-item' : 'odd-item'} key={index}>
                           <Grid container spacing={2}>
                           <Grid item xs={12} lg={0.5}>
                               <IconButton
@@ -425,25 +421,13 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                                 {isMobile ? 'Eliminar' : ''} <DeleteIcon />
                               </IconButton>
                             </Grid>
-                            <Grid
-                              item
-                              xs={12}
-                              lg={ ( ( item.name === 'Combo 4 Jinetes' ) || ( item.category === 'wings' ) || ( item.category === 'burger' ) || ( item.category === 'burrito' ) ) ? 1.7 : 11}
-                            >
-                              <ListItemText
-                                primary={`${item.name} x${item.quantity}`}
-                                secondary={`₡${item.price}`}
+                            <Grid item xs={ 12 } lg={ ( ( item.name === 'Combo 4 Jinetes' ) || ( item.category === 'wings' ) || ( item.category === 'burger' ) || ( item.category === 'burrito' ) ) ? 1.7 : 11 } >
+                              <ListItemText sx={ { paddingLeft: { xs:1.5, lg:0 } } }
+                                primary={ `${item.name} x${item.quantity}` }
+                                secondary={ `₡${item.price}` }
                               />
                             </Grid>
-                            <Grid
-                              sx={{
-                                display: ( ( item.name === 'Combo 4 Jinetes' ) || ( item.category === 'wings' ) || ( item.category === 'burger' ) || ( item.category === 'burrito' ) ) ? '' : 'none',
-                              }}
-                              item
-                              xs={12}
-                              lg={9}
-                            >
-                              
+                            <Grid sx={{ display: ( ( item.name === 'Combo 4 Jinetes' ) || ( item.category === 'wings' ) || ( item.category === 'burger' ) || ( item.category === 'burrito' ) ) ? '' : 'none' }} item xs={12} lg={9}>
                               
                               <Grid container spacing={1}>
 
@@ -486,14 +470,14 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                       variant="contained"
                       color="primary"
                       onClick={handleCartToggle}
-                      sx={{ mr: '10px', width: '43%' }}
+                      sx={{ mr: '10px', width: {xs:'48%', lg: '39%'} }}
                     >
                       Volver al Menú
                     </Button>
                     <Button
-                      sx={{ width: '52%' }}
+                      sx={{ width: {xs:'48%', lg: '59%'}}}
                       variant="contained"
-                      color="primary"
+                      color="success"
                       onClick={handleConfirmCheckout}
                     >
                       Completar Orden ✅
@@ -545,27 +529,27 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
 
         <Container sx={{ py: 4 }} maxWidth="lg">
           <Grid container textAlign={"center"}>
-              <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={2.4}>
+              <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={2.4} xl={2.4}>
                 <Button sx={{backgroundColor:( selectedCategory === "burger"? "red" : "white"), color:( selectedCategory === "burger"? "white" : "black"), width:"90%"}} variant="contained" size="large" onClick={() => updateSelectedCategory('burger')}>
                   Hamburguesas
                 </Button>
               </Grid>
-              <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={2.4}>
+              <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={2.4} xl={2.4}>
                 <Button sx={{backgroundColor:( selectedCategory === "wings"? "red" : "white"), color:( selectedCategory === "wings"? "white" : "black"), width:"90%"}} variant="contained" size="large" onClick={() => updateSelectedCategory('wings')}>
                   Alitas
                 </Button>
               </Grid>
-              <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={2.4}>
+              <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={2.4} xl={2.4}>
                 <Button sx={{backgroundColor:( selectedCategory === "combo"? "red" : "white"), color:( selectedCategory === "combo"? "white" : "black"), width:"90%"}} variant="contained" size="large" onClick={() => updateSelectedCategory('combo')}>
                   Combos
                 </Button>
               </Grid>
-              <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={2.4}>
+              <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={2.4} xl={2.4}>
                 <Button sx={{backgroundColor:( selectedCategory === "beverage"? "red" : "white"), color:( selectedCategory === "beverage"? "white" : "black"), width:"90%"}} variant="contained" size="large" onClick={() => updateSelectedCategory('beverage')}>
                   Bebidas
                 </Button>
               </Grid>
-              <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={3} xl={2.4}>
+              <Grid sx={{py:( isMobile? 2 : 0 )}} item xs={6} sm={6} md={2.4} xl={2.4}>
                 <Button sx={{backgroundColor:( selectedCategory === "other"? "red" : "white"), color:( selectedCategory === "other"? "white" : "black"), width:"90%"}} variant="contained" size="large" onClick={() => updateSelectedCategory('other')}>
                   Otros
                 </Button>
