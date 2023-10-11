@@ -61,9 +61,31 @@
 
 .even-item {
   background-color: white; /* Set your desired background color for even items */
+  border-top: 2px dotted purple;
 }
 
 .odd-item {
-  border-top: 2px dotted #f00;
+  border-top: 2px dotted purple;
   background-color: lightgray; /* Set your desired background color for odd items */
+}
+
+
+/* Add these styles to your CSS file or styles */
+.scrollable-bar {
+  /* Force the scrollbar to be always visible on mobile */
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #888888 #f0f0f0; /* Firefox */
+
+  /* Force the scrollbar to be always visible on Webkit (Chrome, Safari, etc.) */
+  &::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #888888;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #f0f0f0;
+  }
 }

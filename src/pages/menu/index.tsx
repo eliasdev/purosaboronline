@@ -50,6 +50,8 @@ export default function Menu() {
   };
 
   const handleExtraChange = (pItemIndex: number, pExtraIndex: number) => {
+    
+    //check the index to be updated when selecting a no ingredient option with 0 colones as the extraPrice
     const updatedCartItems = JSON.parse(JSON.stringify(cartItems)); // Create a deep copy of cartItems
     updatedCartItems[pItemIndex] = {
       ...updatedCartItems[pItemIndex],
@@ -60,17 +62,17 @@ export default function Menu() {
       ...updatedCartItems[pItemIndex].extras[pExtraIndex],
       selected: !updatedCartItems[pItemIndex].extras[pExtraIndex].selected
     };
-  
+    recalculateTotals();
     setCartItems(updatedCartItems);
     setRefreshData(!refreshData);
   };
   
-  
-  useEffect(() => {
+  const recalculateTotals = () =>{
     let total = 0;
     let subtotal = 0;
-    
-  
+    cartItems.forEach((element) => {
+      element.price = element.basePrice;
+    });
     cartItems.forEach((element) => {
       let itemPrice = element.basePrice; // Initialize item price with base price without extras
       if (element.extras && element.extras.length > 0) {
@@ -96,6 +98,9 @@ export default function Menu() {
     // Update cartTotalCost state
     setCartSubtotal(subtotal);
     setCartTotalCost(total);
+  }
+  useEffect(() => {
+    recalculateTotals();
   }, [cartItems, refreshData]);
   
   
@@ -120,7 +125,7 @@ export default function Menu() {
 
   const openCart = () => {
     // Function to open the modal in Menu component
-    setIsCartOpen(true);
+    handleCartToggle();
   };
 
   const [randomBurgerData, setRandomBurgerData] = useState<CartItem[]>(shuffleArray(
@@ -134,6 +139,8 @@ export default function Menu() {
     //const existingItemIndex = cartItems.findIndex((cartItem) => cartItem.name === item.name);
     setCartItems((prevCartItems) => [...prevCartItems, item]);
     setShowConfirmation(false);
+    setCartTotalCost(0);
+    setCartSubtotal(0);
     handleCartToggle();
     setRefreshData(!refreshData);
   };
@@ -168,13 +175,27 @@ export default function Menu() {
           promoCodeMessage = `Descuento aplicado: (${promoCodeDiscount.discount}%) ₡${cartSubtotal - cartTotalCost} %0a`;
         }
       }
+
+      /*
+      { item.category === 'burger' ? '🍔' : item.category === 'beverage' ? '🥤' : item.category === 'wings' ? '🍗' : '' }
+      { ` ${item.name} x${item.quantity} = ₡${item.basePrice}` } 
+      { ( item.price > item.basePrice? " + " : "" ) } 
+      
+      { item.extras
+            .filter( ( extra: any ) => extra.selected )
+            .map( ( extra:any ) => ` ${ extra.name } ${ ( extra.price > 0 )? ( "₡" + extra.price ) : "" }` )
+            .join(', ') } 
+            { ( item.price > item.basePrice? " = ₡" + item.price : "" ) }
+      */
   
       const formattedOrderText = `Cliente: ${customerName} %0aNúmero de teléfono: ${phoneNumber}%0a%0aConfirmación de la orden:%0a%0a${cartItems
-          .map((item) => {
-              const selectedExtras = item.extras
-                  .filter((extra:any) => extra.selected) // Filter selected extras
-                  .map((extra:any) => `${extra.name} ₡${extra.price} = ₡${item.price}`)
-                  .join(', ');
+          .map((item, itemIndex) => {
+              const isLastItem = itemIndex === cartItems.length - 1;
+              let selectedExtras = item.extras
+                .filter((extra:any) => extra.selected) // Filter selected extras
+                .map((extra:any) => `${extra.name} ` + ( isLastItem && ( extra.price > 0 ) ? `₡${extra.price} = ₡${item.price}` : `₡${extra.price}` ) )
+                .join(', ');
+                selectedExtras += ( ( ( item.price > item.basePrice ) )? " = ₡" + item.price : "" );
               return `${item.name} x${item.quantity} - ₡${item.basePrice}${selectedExtras ? ' (Extras: ' + selectedExtras + ')' : ''}`;
           })
           .join('%0a')}%0aSubtotal: ₡${cartSubtotal.toFixed(0)} colones%0a${promoCodeMessage}%0a%0aTotal: ₡${cartTotalCost.toFixed(0)} colones%0a%0a*NO OLVIDES ENVIAR ESTE MENSAJE*`;
@@ -286,8 +307,8 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                                 
                                 { item.extras
                                       .filter( ( extra: any ) => extra.selected )
-                                      .map( ( extra:any ) => ` ${ extra.name } ₡${ extra.price }` )
-                                      .join(' + ') } 
+                                      .map( ( extra:any ) => ` ${ extra.name } ${ ( extra.price > 0 )? ( "₡" + extra.price ) : "" }` )
+                                      .join(', ') } 
                                       { ( item.price > item.basePrice? " = ₡" + item.price : "" ) }
                               </span>
                               
@@ -407,12 +428,12 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                   </Typography>
                   
 
-                  <Paper style={{ maxHeight: '300px', overflowY: 'scroll' }}>
+                  <Paper className="scrollable-bar" style={{ maxHeight: '300px', overflowY: 'scroll' }}>
                     <List>
                       {cartItems.map((item: any, index) => (
                         <ListItem className={index % 2 === 0 ? 'even-item' : 'odd-item'} key={index}>
                           <Grid container spacing={2}>
-                          <Grid item xs={12} lg={0.5}>
+                            <Grid item xs={12} lg={0.5}>
                               <IconButton
                                 color="secondary"
                                 aria-label="Delete"
@@ -427,12 +448,12 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                                 secondary={ `₡${item.price}` }
                               />
                             </Grid>
-                            <Grid sx={{ display: ( ( item.name === 'Combo 4 Jinetes' ) || ( item.category === 'wings' ) || ( item.category === 'burger' ) || ( item.category === 'burrito' ) ) ? '' : 'none' }} item xs={12} lg={9}>
+                            <Grid sx={{ display: ( ( item.name === 'Combo 4 Jinetes' ) || ( item.category === 'wings' ) || ( item.category === 'burger' ) || ( item.category === 'burrito' ) ) ? '' : 'none' }} xs={12} lg={9.8}>
                               
                               <Grid container spacing={1}>
 
                                 {item.extras.map((extraIngred: any, extra_index: number) => (
-                                  <Grid item xs={12} lg={extraIngred.name.length / item.extras.length*0.9} key={extra_index}>
+                                  <Grid sx={{ marginTop:2 }} item xs={12} lg={extraIngred.name.length / item.extras.length*0.9} key={extra_index}>
                                     <Checkbox
                                       value={extraIngred.name}
                                       disabled={false}
@@ -440,6 +461,7 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                                       onChange={() => {
                                         handleExtraChange(index, extra_index);
                                       }}
+                                      sx={{ paddingLeft:{ xs: 4, lg: 0 } }}
                                     />
                                     <span>₡{extraIngred.price} | {extraIngred.name}</span>
                                   </Grid>
