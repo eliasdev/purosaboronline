@@ -50,7 +50,7 @@ export default function Menu() {
   };
 
   const handleExtraChange = (pItemIndex: number, pExtraIndex: number) => {
-    
+ 
     //check the index to be updated when selecting a no ingredient option with 0 colones as the extraPrice
     const updatedCartItems = JSON.parse(JSON.stringify(cartItems)); // Create a deep copy of cartItems
     updatedCartItems[pItemIndex] = {
@@ -62,12 +62,13 @@ export default function Menu() {
       ...updatedCartItems[pItemIndex].extras[pExtraIndex],
       selected: !updatedCartItems[pItemIndex].extras[pExtraIndex].selected
     };
-    recalculateTotals();
+
     setCartItems(updatedCartItems);
     setRefreshData(!refreshData);
   };
   
-  const recalculateTotals = () =>{
+ 
+  useEffect(() => {
     let total = 0;
     let subtotal = 0;
     cartItems.forEach((element) => {
@@ -98,9 +99,6 @@ export default function Menu() {
     // Update cartTotalCost state
     setCartSubtotal(subtotal);
     setCartTotalCost(total);
-  }
-  useEffect(() => {
-    recalculateTotals();
   }, [cartItems, refreshData]);
   
   
