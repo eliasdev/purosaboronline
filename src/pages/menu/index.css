@@ -82,10 +82,10 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: #888888;
+    background-color: gray
   }
 
   &::-webkit-scrollbar-track {
-    background-color: #f0f0f0;
+    background-color: purple;
   }
 }
