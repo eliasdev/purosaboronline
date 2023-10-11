@@ -148,9 +148,9 @@ export default function Menu() {
   const addToCart = (item: CartItem) => {
     //const existingItemIndex = cartItems.findIndex((cartItem) => cartItem.name === item.name);
     setCartItems((prevCartItems) => [...prevCartItems, item]);
-    setRefreshData(!refreshData);
     setShowConfirmation(false);
     handleCartToggle();
+    setRefreshData(!refreshData);
   };
 
   const removeFromCart = (pIndex: number) => {
@@ -288,10 +288,10 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                           disableTypography
                           primary={
                             <div style={{ fontSize: 15 }}>
-                              <span>{`${item.name} x${item.quantity} = ₡${item.basePrice}`} ( <b>Extras</b>:  {item.extras
+                              <span>{`${item.name} x${item.quantity} = ₡${item.basePrice}`} { (item.extras.length? "+" : "" ) } {item.extras
                                       .filter((extra: any ) => extra.selected)
                                       .map((extra:any) => `${extra.name} ₡${extra.price}`)
-                                      .join(', ')} ) {item.category === 'burger' ? '🍔' : item.category === 'beverage' ? '🥤' : ''}  | ₡{item.price}</span>
+                                      .join(', ')} {item.category === 'burger' ? '🍔' : item.category === 'beverage' ? '🥤' : ''} { (item.extras.length? "= " + item.price : "" ) }  </span>
                               
                               
                             </div>
@@ -428,7 +428,7 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                             <Grid
                               item
                               xs={12}
-                              lg={ ( ( item.category === 'wings' ) || ( item.category === 'burger' ) || ( item.category === 'burrito' ) ) ? 1.7 : 11}
+                              lg={ ( ( item.name === 'Combo 4 Jinetes' ) || ( item.category === 'wings' ) || ( item.category === 'burger' ) || ( item.category === 'burrito' ) ) ? 1.7 : 11}
                             >
                               <ListItemText
                                 primary={`${item.name} x${item.quantity}`}
@@ -437,7 +437,7 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                             </Grid>
                             <Grid
                               sx={{
-                                display: ( ( item.category === 'wings' ) || ( item.category === 'burger' ) || ( item.category === 'burrito' ) ) ? '' : 'none',
+                                display: ( ( item.name === 'Combo 4 Jinetes' ) || ( item.category === 'wings' ) || ( item.category === 'burger' ) || ( item.category === 'burrito' ) ) ? '' : 'none',
                               }}
                               item
                               xs={12}

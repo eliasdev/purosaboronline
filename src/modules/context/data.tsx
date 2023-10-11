@@ -24,8 +24,9 @@ import ImgChickenWings16 from '../../assets/menu/chickenwings16.png';
 import ImgBurrito from '../../assets/menu/burrito.png';
 import ImgChickenFajitas from '../../assets/menu/chicken_fajitas.png';
 
-const extraIngredients = [{name:"doble queso", price: 200, selected: false}, {name:"doble torta", price: 1000, selected: false}, {name:"tocineta", price: 500, selected: false}, {name:"extra pepinillos", price: 300, selected: false}];
+const extraIngredients = [{name:"doble queso", price: 200, selected: false}, {name:"doble torta", price: 1000, selected: false}, {name:"extra tocineta", price: 500, selected: false}, {name:"extra pepinillos", price: 300, selected: false}, {name:"sin cebolla", price: 0}, {name:"sin pepinillo", price: 0}, {name:"sin queso", price: 0}];
 const chickenWingsExtras = [{name:"salsa buffalo", price: 0}, {name:"salsa BBQ", price: 0}, {name:"salsa mostaza miel", price: 0}];
+const comboFourExtras = [{name:"New York", price: 0}, {name:"Chicago", price: 0}, {name:"Italiana", price: 0}, {name:"Mexicana", price: 0}];
 const burritoExtras = [{name:"de pollo", price: 0}, {name:"de carne", price: 0}];
 
 
@@ -45,7 +46,7 @@ export const burgerData: CartItem[] = [
     { name: 'Coca Cola (sin azúcar) 600ml', description: null, basePrice: 1000, price: 1000, img: ImgCocaSinAzucar, quantity: 1, available: true, category: "beverage", ingreds: [], extras:[] },
     { name: 'Tropical Melocotón 600ml', description: null, basePrice: 1000, price: 1000, img: ImgTropical, quantity: 1, available: true, category: "beverage", ingreds: [], extras:[] },
     { name: 'H2O 600ml', description: null, basePrice: 1000, price: 1000, img: ImgHtwoO, quantity: 1, available: true, category: 'beverage', ingreds: [], extras:[] },
-    { name: 'Combo 4 Jinetes', description: "Elige una hamburguesa entre la New York, Chicago, Italiana o Mexicana + papas gajo y un refresco Tropical de 600ml.", basePrice: 5900, price: 5900, img: ImgComboFour, quantity: 1, available: true, category: 'combo', ingreds: [], extras: [] },
+    { name: 'Combo 4 Jinetes', description: "Elige una hamburguesa entre la New York, Chicago, Italiana o Mexicana + papas gajo y un refresco Tropical de 600ml.", basePrice: 5900, price: 5900, img: ImgComboFour, quantity: 1, available: true, category: 'combo', ingreds: [], extras: comboFourExtras },
     { name: 'Combo Yankee Pack', description: "1 Chicago + 1 New York + 1 orden de Alitas de Pollo con 16 unidades + 400g de papas fritas + un refresco Tropical de 2L.", basePrice: 19900, price: 19900, img: ImgComboYankee, quantity: 1, available: true, category: 'combo', ingreds: [], extras: [] },
     { name: 'Combo Doble Sabor', description: "Elige una hamburguesa entre la New York, Chicago, Italiana o Mexicana acompañada de papas gajo + una orden de 8 alitas + un acompañamiento de 250g de papas fritas + dos refrescos Tropical de 600ml.", basePrice: 10900, price: 10900, img: ImgComboDuo, quantity: 1, available: true, category: 'combo', ingreds: [], extras: [] },
     { name: 'Alitas de Pollo (8uds)', description: "8 Alitas de Pollo con 3 opciones de salsas exquisitas: la picante Buffalo, la dulce y ahumada Barbacoa, y la suave y deliciosa Mostaza Miel acompañadas de 250g de crujientes papas fritas.", basePrice: 5900, price: 5900, img: ImgChickenWings8, quantity: 1, available: true, category: "wings", ingreds: [], extras: chickenWingsExtras },
