@@ -122,7 +122,8 @@ export default function Menu() {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   const openCart = () => {
-    // Function to open the modal in Menu component
+    setShowConfirmation(false);
+    setIsCartOpen(!isCartOpen)
     handleCartToggle();
   };
 
@@ -246,7 +247,7 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
 
       <div>
         
-        <img style={{display: (isCartOpen)? "none" : "" }} alt="Abrir carrito de compras" onClick={() => setIsCartOpen(!isCartOpen)} src={ImgFloatingCart} className="floating-cart" />
+        <img style={{display: (isCartOpen)? "none" : "" }} alt="Abrir carrito de compras" onClick={() => openCart()} src={ImgFloatingCart} className="floating-cart" />
       </div>
       
       <Modal
@@ -441,18 +442,18 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                                 {isMobile ? 'Eliminar' : ''} <DeleteIcon />
                               </IconButton>
                             </Grid>
-                            <Grid item xs={ 12 } lg={ ( ( item.name === 'Combo 4 Jinetes' ) || ( item.category === 'wings' ) || ( item.category === 'burger' ) || ( item.category === 'burrito' ) ) ? 1.7 : 11 } >
-                              <ListItemText sx={ { paddingLeft: { xs:1.5, lg:0 } } }
+                            <Grid item xs={ 12 } lg={ (  ( item.category === 'burrito' ) ) ? 1.7 : 3.5 } >
+                              <ListItemText sx={ { marginTop:1, paddingLeft: { xs:1.5, lg:0 } } }
                                 primary={ `${item.name} x${item.quantity}` }
                                 secondary={ `₡${item.price}` }
                               />
                             </Grid>
-                            <Grid sx={{ display: ( ( item.name === 'Combo 4 Jinetes' ) || ( item.category === 'wings' ) || ( item.category === 'burger' ) || ( item.category === 'burrito' ) ) ? '' : 'none' }} xs={12} lg={9.8}>
+                            <Grid sx={{ marginTop:1, marginBottom:1,  display: ( ( item.name === 'Combo Doble Sabor' ) || ( item.name === 'Combo 4 Jinetes' ) || ( item.category === 'wings' ) || ( item.category === 'burger' ) || ( item.category === 'burrito' ) ) ? '' : 'none' }} xs={12} lg={ ( item.category === 'wings' )? 7 :  ( ( item.name === 'Combo Doble Sabor' ) || ( item.name === 'Combo 4 Jinetes' ) )? 7 : 8 }>
                               
                               <Grid container spacing={1}>
 
                                 {item.extras.map((extraIngred: any, extra_index: number) => (
-                                  <Grid sx={{ marginTop:2 }} item xs={12} lg={extraIngred.name.length / item.extras.length*0.9} key={extra_index}>
+                                  <Grid sx={{ marginTop:1, marginLeft: 1, lineHeight: 0.5}} item xs={12} lg={extraIngred.name.length / item.extras.length*1.4} key={extra_index}>
                                     <Checkbox
                                       value={extraIngred.name}
                                       disabled={false}
@@ -462,7 +463,7 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                                       }}
                                       sx={{ paddingLeft:{ xs: 4, lg: 0 } }}
                                     />
-                                    <span>₡{extraIngred.price} | {extraIngred.name}</span>
+                                    <span>₡{extraIngred.price} | { isMobile? "" : "<br />" } {extraIngred.name}</span>
                                   </Grid>
                                 ))}
                                 
