@@ -4,7 +4,6 @@ import Menu from './pages/menu'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { ToastContainer } from 'react-toastify';
-import ReactGA from 'react-ga';
 
 
 
@@ -12,7 +11,8 @@ const About = () => <div>About Page</div>;
 const Contact = () => <div>Contact Page</div>;
 
 
-ReactGA.initialize('G-TEMZXL6F6J');
+//ReactGA.initialize('G-TEMZXL6F6J');
+
 
 function App() {
   return (
