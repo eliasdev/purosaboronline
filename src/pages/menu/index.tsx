@@ -168,10 +168,10 @@ export default function Menu() {
   const sendMessage = () => {
     if (customerName && phoneNumber) {
       let promoCodeMessage = "";
-      if (promoCode) {
+      if ( promoCode ) {
         const promoCodeDiscount = promoCodeList.find((code) => code.key === promoCode);
-        if (promoCodeDiscount) {
-          promoCodeMessage = `Descuento aplicado: (${promoCodeDiscount.discount}%) ₡${cartSubtotal - cartTotalCost} %0a`;
+        if ( promoCodeDiscount ) {
+          promoCodeMessage = `Descuento aplicado: (${promoCodeDiscount.discount }%) ₡${cartSubtotal - cartTotalCost} %0aPromo code: ${promoCode}%0a`;
         }
       }
 
@@ -212,7 +212,7 @@ const applyPromoCode = ( pPromoCode : string ) => {
   pPromoCode = pPromoCode.toLowerCase();
   const promoCodeItem = promoCodeList.find((item) => item.key === pPromoCode);
   // If promoCodeItem is found, return the discount value, otherwise return null
-  if( promoCodeItem && promoCodeItem.discount > 0 ){
+  if( promoCodeItem && ( promoCodeItem.discount > 0 ) ){
     setShowPromoCode(!showPromoCode);
     setPromoCode( pPromoCode );
     
@@ -222,7 +222,7 @@ const applyPromoCode = ( pPromoCode : string ) => {
       setIsShowingAnimatedScreen(false);
       toast.success( "Bien hecho" + ( customerName? ( " " + customerName ) : "" ) + "! un super descuento de " + promoCodeItem.discount + "% ha sido aplicado a tu compra!" );
     }, 5000);
-  } else{
+  } else if( pPromoCode.length ){
     setShowPromoCode(false);
     setRefreshData(!refreshData);
     toast.error( "Lo siento! el código que ha ingresado no existe." );
@@ -424,7 +424,7 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                     paddingBottom={2}
                     fontWeight="bold"
                   >
-                    Carrito de Compras 🛒
+                    ({cartItems.length}) Carrito de Compras 🛒
                   </Typography>
                   
 
@@ -463,7 +463,13 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                                       }}
                                       sx={{ paddingLeft:{ xs: 4, lg: 0 } }}
                                     />
-                                    <span>₡{extraIngred.price} | { isMobile? "" : "<br />" } {extraIngred.name}</span>
+                                    
+                                    {isMobile && 
+                                      <span>₡{extraIngred.price} | {extraIngred.name}</span>
+                                    }
+                                    {!isMobile && 
+                                      <span>₡{extraIngred.price} | <br /> {extraIngred.name}</span>
+                                    }
                                   </Grid>
                                 ))}
                                 
