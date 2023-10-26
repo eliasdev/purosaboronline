@@ -25,6 +25,7 @@ import { Divider, Modal, Checkbox, Backdrop, List,  ListItem,  ListItemText,  Pa
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { burgerData, promoCodeList } from '../../modules/context/data';
+import PromoModal from '../../modules/components/promoModal';
 
 
 // TODO remove, this demo shouldn't need to reset the theme.
@@ -41,6 +42,7 @@ export default function Menu() {
   const [customerName, setCustomerName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [promoCode, setPromoCode] = useState('');
+  const [promoCodeDiscount, setPromoCodeDiscount] = useState(0);
   const [showPromoCode, setShowPromoCode] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('combo');
 
@@ -173,32 +175,19 @@ export default function Menu() {
         if ( promoCodeDiscount ) {
           promoCodeMessage = `Descuento aplicado: (${promoCodeDiscount.discount }%) ₡${cartSubtotal - cartTotalCost} %0aPromo code: ${promoCode}%0a`;
         }
-      }
-
-      /*
-      { item.category === 'burger' ? '🍔' : item.category === 'beverage' ? '🥤' : item.category === 'wings' ? '🍗' : '' }
-      { ` ${item.name} x${item.quantity} = ₡${item.basePrice}` } 
-      { ( item.price > item.basePrice? " + " : "" ) } 
-      
-      { item.extras
-            .filter( ( extra: any ) => extra.selected )
-            .map( ( extra:any ) => ` ${ extra.name } ${ ( extra.price > 0 )? ( "₡" + extra.price ) : "" }` )
-            .join(', ') } 
-            { ( item.price > item.basePrice? " = ₡" + item.price : "" ) }
-      */
+    }
   
-      const formattedOrderText = `Cliente: ${customerName} %0aNúmero de teléfono: ${phoneNumber}%0a%0aConfirmación de la orden:%0a%0a${cartItems
-          .map((item, itemIndex) => {
-              const isLastItem = itemIndex === cartItems.length - 1;
-              let selectedExtras = item.extras
-                .filter((extra:any) => extra.selected) // Filter selected extras
-                .map((extra:any) => `${extra.name} ` + ( isLastItem && ( extra.price > 0 ) ? `₡${extra.price} = ₡${item.price}` : `₡${extra.price}` ) )
-                .join(', ');
-                selectedExtras += ( ( ( item.price > item.basePrice ) )? " = ₡" + item.price : "" );
-              return `${item.name} x${item.quantity} - ₡${item.basePrice}${selectedExtras ? ' (Extras: ' + selectedExtras + ')' : ''}`;
-          })
-          .join('%0a')}%0aSubtotal: ₡${cartSubtotal.toFixed(0)} colones%0a${promoCodeMessage}%0a%0aTotal: ₡${cartTotalCost.toFixed(0)} colones%0a%0a*NO OLVIDES ENVIAR ESTE MENSAJE*`;
-  
+    const formattedOrderText = `Cliente: ${customerName} %0aNúmero de teléfono: ${phoneNumber}%0a%0aConfirmación de la orden:%0a%0a${cartItems
+      .map( ( item ) => {
+        let selectedExtras = item.extras
+          .filter((extra:any) => extra.selected)
+          .map((extra:any) => `${extra.name} ${extra.price > 0 ? `₡${extra.price}` : ''}`)
+          .join(', ');
+        selectedExtras = selectedExtras ? `(${selectedExtras})` : '';
+        const itemTotalPrice = item.price > item.basePrice ? `= ₡${item.price}` : '';
+        return `${item.name} x${item.quantity} - ₡${item.basePrice} ${selectedExtras} ${itemTotalPrice}`;
+      })
+      .join('%0a')}%0aSubtotal: ₡${cartSubtotal.toFixed(0)} colones%0a${promoCodeMessage}%0a%0aTotal: ₡${cartTotalCost.toFixed(0)} colones%0a%0a*NO OLVIDES ENVIAR ESTE MENSAJE*`;
       window.open('https://wa.me/50685194028?text=' + formattedOrderText, '_blank');
     } else {
       toast.error('Ingresa tu información personal para completar la orden.', {
@@ -215,7 +204,7 @@ const applyPromoCode = ( pPromoCode : string ) => {
   if( promoCodeItem && ( promoCodeItem.discount > 0 ) ){
     setShowPromoCode(!showPromoCode);
     setPromoCode( pPromoCode );
-    
+    setPromoCodeDiscount( promoCodeItem.discount );
     setRefreshData(!refreshData);
     setIsShowingAnimatedScreen(true);
     setTimeout(() => {
@@ -237,9 +226,6 @@ const updateSelectedCategory = ( pSelected: string) => {
 
 const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
 
-
-  
-
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -250,6 +236,7 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
         <img style={{display: (isCartOpen)? "none" : "" }} alt="Abrir carrito de compras" onClick={() => openCart()} src={ImgFloatingCart} className="floating-cart" />
       </div>
       
+      <PromoModal />
       <Modal
         open={isShowingAnimatedScreen}
         onClose={() => setIsShowingAnimatedScreen(false)}
@@ -362,7 +349,7 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                     paddingTop={2}
                     fontWeight="bold"
                   >
-                    Código de promoción: {promoCode} ❤️
+                    Código de promoción: {promoCode} ❤️ ({promoCodeDiscount}%) 🆓
                   </Typography>
                 }
                 
@@ -465,10 +452,10 @@ const [isShowingAnimatedScreen, setIsShowingAnimatedScreen] = useState(false);
                                     />
                                     
                                     {isMobile && 
-                                      <span>₡{extraIngred.price} | {extraIngred.name}</span>
+                                      <span className='lhspan'>₡{extraIngred.price} | {extraIngred.name}</span>
                                     }
                                     {!isMobile && 
-                                      <span>₡{extraIngred.price} | <br /> {extraIngred.name}</span>
+                                      <span className='lhspan'>₡{extraIngred.price} | <br /> {extraIngred.name}</span>
                                     }
                                   </Grid>
                                 ))}
