@@ -53,7 +53,7 @@ const PromoModal = () => {
         <Backdrop open={showModal} onClick={closeModal} style={{ zIndex: 9999 }} />
         <div className="modal-overlay">
           <Grid
-          sx={{ width: isMobile? "80%" : "25%", height: isMobile? "63%" : "75%" }}
+          sx={{ width: isMobile? "80%" : "25%", height: isMobile? "70%" : "75%" }}
             container
             justifyContent="center"
             alignItems="center"

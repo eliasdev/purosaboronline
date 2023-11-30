@@ -8,6 +8,7 @@ export interface CartItem {
     available: boolean;
     category: string;
     description: string|null;
+    meat: Array|undefined;
     ingreds: Array;
     extras: Array;
   }
