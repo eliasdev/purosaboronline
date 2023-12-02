@@ -609,7 +609,7 @@ export default function Menu() {
             <Divider/>
             <Typography variant="h5" align="center" color="text.secondary" paragraph
               sx={{ fontSize: { lg: '1.3em', xs: '0.8em' }, paddingLeft: 6, paddingRight: 6, pt: {lg:4, xs:2}, pb: {lg:0, xs:3} }}>
-              Elige tus platillos favoritas, selecciona la cantidad y haz clic en el botón 'Agregar al carrito' para realizar tu pedido en línea.{ isMobile? "" : "<br/>" } Todas las hamburguesas incluyen una orden de papas gajo 🍟 
+              Elige tus platillos favoritas, selecciona la cantidad y haz clic en el botón 'Agregar al carrito' para realizar tu pedido en línea.{ isMobile? "" : <br /> } Todas las hamburguesas incluyen una orden de papas gajo 🍟 
             </Typography>
 
               

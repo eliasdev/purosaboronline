@@ -4,6 +4,7 @@ import Menu from './pages/menu'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { ToastContainer } from 'react-toastify';
+import Background from './modules/components/background';
 
 
 
@@ -24,7 +25,8 @@ function App() {
       </Helmet>
       <div className="App">
         <ToastContainer />  
-        <div className='mosaicBackground'></div>
+
+        <Background />
         <Router basename="/">
           <Routes>
             <Route path="/" element={<Menu />} />
