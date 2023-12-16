@@ -211,7 +211,7 @@ export default function Menu() {
     
         return `${item.name}${selectedMeatTerm ? ` [${selectedMeatTerm.name}]` : ''} x${item.quantity} - ₡${item.basePrice} ${selectedExtras} ${itemTotalPrice}`;
       })
-      .join('%0a')}%0aSubtotal: ₡${cartSubtotal.toFixed(0)} colones%0a${promoCodeMessage}%0a%0aTotal: ₡${cartTotalCost.toFixed(0)} colones%0a%0a*NO OLVIDES ENVIAR ESTE MENSAJE*`;    
+      .join('%0a')}"${ promoCode? "%0aSubtotal: ₡" + cartSubtotal.toFixed(0)+ " colones" : "" }%0a${promoCodeMessage}%0a%0aTotal: ₡${cartTotalCost.toFixed(0)} colones%0a%0a*NO OLVIDES ENVIAR ESTE MENSAJE*`;    
       window.open('https://wa.me/50685194028?text=' + formattedOrderText, '_blank');
     } else {
       toast.error('Ingresa tu información personal para completar la orden.', {
@@ -301,7 +301,7 @@ export default function Menu() {
                     Confirma tu orden en Puro Sabor ✅
                   </Typography>
                   <span>Hay ({cartItems.length}) productos en el carrito, haz scroll en la lista para verlos todos.</span>
-                  <Paper style={{ maxHeight: isMobile? '200px' : '300px', overflowY: 'auto' }}>
+                  <Paper style={{ maxHeight: isMobile? '170px' : '300px', overflowY: 'auto' }}>
                     <List>
                       {cartItems.map((item, index) => (
                         <ListItem className={index % 2 === 0 ? 'even-item' : 'odd-item'} style={{ height: 'auto' }} key={index}>
@@ -379,7 +379,7 @@ export default function Menu() {
                       fontSize="1em"
                       variant="subtitle1"
                       gutterBottom
-                      paddingTop={2}
+                      paddingTop={0}
                       fontWeight="bold"
                     >
                       Código de promoción: {promoCode} ❤️ ({promoCodeDiscount}%) 🆓
@@ -388,7 +388,7 @@ export default function Menu() {
                   
                   <TextField
                     label="Ingresa tu nombre completo"
-                    sx={{pt: 0}}
+                    sx={{pt: 0, marginTop:0}}
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     fullWidth
@@ -402,7 +402,7 @@ export default function Menu() {
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     fullWidth
                     margin="normal"
-                    sx={{ pb: 0 }}
+                    sx={{ pb: 0, marginTop:0 }}
                   />
                   <TextField
                     label="¿Tienes un código de promoción? Ingrésalo acá!"
@@ -411,9 +411,9 @@ export default function Menu() {
                     onBlur={() => applyPromoCode(promoCode)}
                     fullWidth
                     margin="normal"
-                    sx={{ pb: 0 }}
+                    sx={{ pb: 0, marginTop:0 }}
                   />
-                  <div className="button-group" style={{ paddingBottom: 15, paddingTop: 15 }}>
+                  <div className="button-group" style={{ paddingBottom: 8, paddingTop: 8 }}>
                     <Button
                       sx={{ mr: '10px', width: { lg: '37%', xs: '33%' } }}
                       variant="contained"

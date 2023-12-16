@@ -55,4 +55,4 @@ export const burgerData: CartItem[] = [
     { name: 'Fajitas de Pollo', description: "Jugosos trozos de pechuga de pollo empanizados y dorados a la perfección te esperan en cada bocado. Acompañadas de 250gramos de papas a la francesa, nuestras fajitas son tiernas por dentro y crujientes por fuera.", basePrice: 4000, price: 4000, img:  ImgChickenFajitas, quantity: 1, available: true, category: "other", ingreds: [], extras: [], meat: [] }
   ];
 
-export const promoCodeList = [ { key:"elpurosabor", discount:10 } ];
+export const promoCodeList = [ { key:"elpurosabor", discount:10 }, { key:"jpguerrero", discount:30 }, { key:"familiacastro", discount:20 } ];
