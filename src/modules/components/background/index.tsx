@@ -7,7 +7,7 @@ const Background = () => {
   return (
     <>
         <div className='mosaicBackground'></div>
-        <div className="snowflakes" aria-hidden="true">
+        {/*<div className="snowflakes" aria-hidden="true">
           <div className="snowflake">
             <div className="inner">❅</div>
           </div>
@@ -44,7 +44,7 @@ const Background = () => {
           <div className="snowflake">
             <div className="inner">❅</div>
           </div>
-        </div>
+        </div>*/}
     </>
   );
 };

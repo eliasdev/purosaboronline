@@ -8,7 +8,7 @@
   left: 0;
   width: 100vw;
   height: 105vh;
-  background-image: url('../../assets/4.png');
+  background-image: url('../../assets/1.png');
   background-repeat: repeat;
   z-index: -1; /* Place the background behind other content */
 }
