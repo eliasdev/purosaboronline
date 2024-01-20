@@ -48,6 +48,8 @@ export default function Menu() {
   const [showPromoCode, setShowPromoCode] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('combo');
   const [isWarningOpen, setWarningOpen] = useState(true);
+  const [showExtras, setShowExtras] = useState(false);
+
 
   const handleWarningClose = (event: React.SyntheticEvent<Element, Event>, reason?: SnackbarCloseReason) => {
     if (reason === 'clickaway') {
@@ -112,6 +114,7 @@ export default function Menu() {
       total += element.price;
       subtotal += element.price;
     });
+    cartItems.reverse();
     if (promoCode) {
       setPromoCode(promoCode.toLowerCase());
       const promoCodeDiscount = promoCodeList.find((code) => code.key === promoCode);
@@ -444,7 +447,7 @@ export default function Menu() {
                       paddingBottom={2}
                       fontWeight="bold"
                     >
-                      ({cartItems.length}) Carrito de Compras 🛒
+                      Hay ({cartItems.length}) productos en el carrito de Compras 🛒
                     </Typography>
 
                     { isMobile &&
@@ -468,11 +471,20 @@ export default function Menu() {
                                   {isMobile ? 'Eliminar' : ''} <DeleteIcon />
                                 </IconButton>
                               </Grid>
-                              <Grid item xs={ 12 } lg={ ( ( item.category === 'burrito' ) ) ? 1.7 : 3.5 } >
-                                <ListItemText sx={ { marginTop:1, paddingLeft: { xs:1.5, lg:0 } } }
-                                  primary={ `${item.name} x${item.quantity}` }
-                                  secondary={ `₡${item.price}` }
-                                />
+                              <Grid item xs={ 12 } lg={ ( ( item.category === 'burrito' ) ) ? 1.7 : ( (!showExtras && !item.meat.length )? 7.5 : 3.5 ) } >
+                              <ListItemText
+                                className='extraTrigger'
+                                sx={{ marginTop: 1, paddingLeft: { xs: 1.5, lg: 0 } }}
+                                onClick={() => setShowExtras(!showExtras)} // Toggle showExtras on click
+                              >
+                                <Typography variant="body1" fontWeight="bold">
+                                  {`${item.name} x${item.quantity}`}
+                                  <span className='regular-text clickable'>{showExtras? "" : "[Click aquí para + o - ingrendientes]"}</span>
+                                </Typography>
+                                <Typography variant="body2">
+                                  {`₡${item.price}`}
+                                </Typography>
+                              </ListItemText>
                               </Grid>
                               <Grid sx={{ marginTop:1, marginBottom:1,  display: ( ( item.name === 'Combo Doble Sabor' ) || ( item.name === 'Combo 4 Jinetes' ) || ( item.category === 'wings' ) || ( item.category === 'burger' ) || ( item.category === 'burrito' ) ) ? '' : 'none' }} xs={12} lg={ ( item.category === 'wings' )? 7 :  ( ( item.name === 'Combo Doble Sabor' ) || ( item.name === 'Combo 4 Jinetes' ) )? 7 : 8 } item>
                                 
@@ -511,46 +523,49 @@ export default function Menu() {
                                   </Grid>
                                 }
 
-                                <Grid container spacing={1}>
+                                <Grid container spacing={1} sx={{display: showExtras ? '' : 'none' }} className='openExtras'>
 
-                                <Grid xs={12} lg={12} item>
-                                      <Typography
-                                      gutterBottom
-                                      paddingTop={4}
-                                      fontWeight="bold"
-                                      >
-                                        Selecciona los extras que deseas:
-                                      </Typography>
-                                    </Grid>
+                                  <Grid xs={12} lg={12} item>
+                                        <Typography
+                                        gutterBottom
+                                        paddingTop={4}
+                                        fontWeight="bold"
+                                        >
+                                          Selecciona los extras que deseas:
+                                        </Typography>
+                                      </Grid>
 
-                                  {item.extras.map((extraIngred: any, extra_index: number) => (
-                                    <Grid sx={{ marginTop:1, marginLeft: 1, lineHeight: 0.5}} item xs={12} lg={extraIngred.name.length / item.extras.length*1.7} key={extra_index}>
-                                      <Checkbox
-                                        value={extraIngred.name}
-                                        disabled={false}
-                                        checked={extraIngred.selected}
-                                        onChange={() => {
-                                          handleExtraChange(index, extra_index);
-                                        }}
-                                        sx={{ paddingLeft:{ xs: 4, lg: 0 } }}
-                                      />
-                                      {isMobile && 
-                                        <span className='lhspan'>₡{extraIngred.price} | {extraIngred.name}</span>
-                                      }
-                                      {!isMobile && 
-                                        <span className='lhspan'>₡{extraIngred.price} | <br /> {extraIngred.name}</span>
-                                      }
-                                    </Grid>
-                                  ))}
+                                    {item.extras.map((extraIngred: any, extra_index: number) => (
+                                      <Grid sx={{ marginTop:1, marginLeft: 1, lineHeight: 0.5}} item xs={12} lg={extraIngred.name.length / item.extras.length*1.7} key={extra_index}>
+                                        <Checkbox
+                                          value={extraIngred.name}
+                                          disabled={false}
+                                          checked={extraIngred.selected}
+                                          onChange={() => {
+                                            handleExtraChange(index, extra_index);
+                                          }}
+                                          sx={{ paddingLeft:{ xs: 4, lg: 0 } }}
+                                        />
+                                        {isMobile && 
+                                          <span className='lhspan'>₡{extraIngred.price} | {extraIngred.name}</span>
+                                        }
+                                        {!isMobile && 
+                                          <span className='lhspan'>₡{extraIngred.price} | <br /> {extraIngred.name}</span>
+                                        }
+                                      </Grid>
+                                    ))}
                                   
+                                  </Grid>
+                                
                                 </Grid>
-                              </Grid>
                               
                             </Grid>
+
                           </ListItem>
                         ))}
                       </List>
                     </Paper>
+                    
                     <Typography
                       variant="h5"
                       gutterBottom
